@@ -15,15 +15,27 @@ Item.prototype.update = function(dt) {
 
 };
 
+// Create the bounding box
+Item.prototype.bBox = function() {
+  // Create the rectangle for the bounding box
+  this.box = {
+    boxX: this.x,
+    boxY: this.y + 50,
+    boxWidth: horisontal,
+    boxHeight: vertical
+  };
+
+  //Debuging bBox
+  ctx.beginPath();
+  ctx.rect(this.box.boxX, this.box.boxY, this.box.boxWidth, this.box.boxHeight);
+  ctx.stroke();
+};
+
 // Draw the item on the screen, required method for game
 Item.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+
 }
-
-// Create the bounding box
-Item.prototype.bBox = function() {
-
-};
 
 // This fucntion will create the new subclass object and constructor
 var createSubClass = function(subclass, superclass) {
@@ -33,19 +45,58 @@ var createSubClass = function(subclass, superclass) {
 
 // Enemies our player must avoid
 var Enemy = function(x, y, sprite) {
+  // Superclass call
   Item.call(this, x, y, sprite);
   // Variables applied to each of our instances go here,
   // we've provided one for you to get started
-
+  this.x = -horisontal;
+  this.y = randomYPosition();
+  this.sprite = 'images/enemy-bug.png';
+  this.speed = randomSpeed();
 };
 
-// Create the Enemy object, assdf
+// Create the Enemy object, and constructor
 createSubClass(Enemy, Item);
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+// Generate a random value for the speed
+var randomSpeed = function() {
+  return Math.random()*100 + 70;
+};
+
+// Generate a random value for the speed
+var randomYPosition = function() {
+  var min = 1,
+      max = 4;
+  return (Math.floor(Math.random() * (max - min)) + min) * vertical;
+};
+
+// Update the items's position, required method for game
+// Parameter: dt, a time delta between ticks
+Enemy.prototype.update = function(dt) {
+  this.x += this.speed * dt;
+    if(this.x >= 500) {
+        this.x = -horisontal;
+        this.y = randomYPosition();
+        this.speed = randomSpeed();
+    }
+};
+
+var createEnemies = function(number) {
+  var enemies = [];
+  for (var i = 0; i < number; i++) {
+    enemies.push(new Enemy());
+    while (i > 0 && enemies[i - 1].y === enemies[i].y) {
+      console.log("Changing enemy " + i + " y coordinate");
+      enemies[i] = new Enemy();
+      console.log("Enemy " + i + " y:" + enemies[i].y);
+    }
+  }
+  return enemies;
+};
+
+// Player class
 var Player = function(x, y, sprite) {
+  // Superclass call
   Item.call(this, x, y, sprite);
   // Variables applied to each of our instances go here,
   // we've provided one for you to get started
@@ -55,8 +106,13 @@ var Player = function(x, y, sprite) {
   // a helper we've provided to easily load images
   this.sprite = 'images/char-boy.png';
 };
+
+// Create the Player object, and constructor
 createSubClass(Player, Item);
 
+////////////FIX WITH A CONSOLE.LOG(e) stuff
+
+// Handle the inputs from the players keybo
 Player.prototype.handleInput = function(key) {
   // var horisontal = 101,
       // vertical = 83;
@@ -74,8 +130,7 @@ Player.prototype.handleInput = function(key) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-
-var allEnemies = [new Enemy(0, 0, 'images/enemy-bug.png'), new Enemy(101, 83, 'images/enemy-bug.png')];
+var allEnemies = createEnemies(3);
 var player = new Player(2, 5);
 
 // This listens for key presses and sends the keys to your
