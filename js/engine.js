@@ -98,7 +98,14 @@ var Engine = (function(global) {
     }
 
     function checkCollisions() {
-      //console.log(player.box.);
+      for (i = 0; i < allEnemies.length; i++) {
+        if (player.bBoxX > allEnemies[i].bBoxX &&
+            player.bBoxX < allEnemies[i].bBoxX + allEnemies[i].bBoxWidth &&
+            player.bBoxY === allEnemies[i].bBoxY) {
+          player.x = 2 * horisontal;
+          player.y = 5 * vertical;
+        }
+      }
     }
 
     /* This function initially draws the "game level", it will then call

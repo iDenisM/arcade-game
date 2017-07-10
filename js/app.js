@@ -7,6 +7,7 @@ var Item = function(x , y, sprite) {
   this.x = x;
   this.y = y;
   this.sprite = sprite;
+  this.collision = false;
 };
 
 // Update the items's position, required method for game
@@ -18,16 +19,15 @@ Item.prototype.update = function(dt) {
 // Create the bounding box
 Item.prototype.bBox = function() {
   // Create the rectangle for the bounding box
-  this.box = {
-    boxX: this.x,
-    boxY: this.y + 50,
-    boxWidth: horisontal,
-    boxHeight: vertical
-  };
+  this.bBoxX = this.x;
+  this.bBoxY = this.y + 50;
+  this.bBoxWidth = horisontal;
+  this.bBoxHeight = vertical;
+
 
   //Debuging bBox
   ctx.beginPath();
-  ctx.rect(this.box.boxX, this.box.boxY, this.box.boxWidth, this.box.boxHeight);
+  ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
   ctx.stroke();
 };
 
@@ -109,6 +109,13 @@ var Player = function(x, y, sprite) {
 
 // Create the Player object, and constructor
 createSubClass(Player, Item);
+
+// Update the players's position, required method for game
+// Parameter: dt, a time delta between ticks
+Player.prototype.update = function(dt) {
+  //console.log(player.collision);
+
+};
 
 ////////////FIX WITH A CONSOLE.LOG(e) stuff
 
