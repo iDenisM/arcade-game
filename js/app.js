@@ -24,8 +24,7 @@ Item.prototype.bBox = function() {
   this.bBoxWidth = horisontal;
   this.bBoxHeight = vertical;
 
-
-  //Debuging bBox
+  //Debugging bBox
   ctx.beginPath();
   ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
   ctx.stroke();
@@ -113,7 +112,6 @@ createSubClass(Player, Item);
 // Update the players's position, required method for game
 // Parameter: dt, a time delta between ticks
 Player.prototype.update = function(dt) {
-  //console.log(player.collision);
 
 };
 
@@ -134,11 +132,25 @@ Player.prototype.handleInput = function(key) {
   }
 };
 
+// Create a standart staring position for the Player
+Player.prototype.startPosition = function() {
+  player.x = 2 * horisontal;
+  player.y = 5 * vertical;
+}
+
+Player.prototype.setBBox = function() {
+  player.bBoxX += 10;
+  player.bBoxY += 10;
+  player.bBoxWidth -= 20;
+  player.bBoxHeight -= 20;
+
+}
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = createEnemies(3);
-var player = new Player(2, 5);
+var player = new Player();
+player.startPosition();
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

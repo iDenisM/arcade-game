@@ -99,11 +99,11 @@ var Engine = (function(global) {
 
     function checkCollisions() {
       for (i = 0; i < allEnemies.length; i++) {
-        if (player.bBoxX > allEnemies[i].bBoxX &&
-            player.bBoxX < allEnemies[i].bBoxX + allEnemies[i].bBoxWidth &&
-            player.bBoxY === allEnemies[i].bBoxY) {
-          player.x = 2 * horisontal;
-          player.y = 5 * vertical;
+        if (player.bBoxX < allEnemies[i].bBoxX + allEnemies[i].bBoxWidth &&
+            player.bBoxX + player.bBoxWidth > allEnemies[i].bBoxX &&
+            player.bBoxY < allEnemies[i].bBoxY + allEnemies[i].bBoxHeight &&
+            player.bBoxY + player.bBoxHeight > allEnemies[i].bBoxY) {
+          player.startPosition();
         }
       }
     }
