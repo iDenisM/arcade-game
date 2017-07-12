@@ -160,12 +160,11 @@ var Engine = (function(global) {
          */
         allEnemies.forEach(function(enemy) {
             enemy.render();
-            enemy.bBox();
+            enemy.bBox(5, 5, horisontal, vertical);
         });
 
         player.render();
-        player.bBox();
-        console.log(player.bBox());
+        player.bBox(15, 5, horisontal, vertical);
     }
 
     /* This function does nothing but it could have been a good place to

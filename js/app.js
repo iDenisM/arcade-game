@@ -17,12 +17,12 @@ Item.prototype.update = function(dt) {
 };
 
 // Create the bounding box
-Item.prototype.bBox = function() {
+Item.prototype.bBox = function(bX, bY, bW, bH) {
   // Create the rectangle for the bounding box
-  this.bBoxX = this.x;
-  this.bBoxY = this.y + 50;
-  this.bBoxWidth = horisontal;
-  this.bBoxHeight = vertical;
+  this.bBoxX = this.x + bX;
+  this.bBoxY = this.y + bY + 50;
+  this.bBoxWidth = bW === 0 ? 0 : bW - 2 * bX;
+  this.bBoxHeight = bH === 0 ? 0 : bH - 2 * bY;
 
   //Debugging bBox
   ctx.beginPath();
