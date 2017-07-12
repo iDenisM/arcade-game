@@ -1,6 +1,7 @@
 // Global variables
 var horisontal = 101, //use this to move horisontaly
-    vertical = 83;  //use this to move verticaly
+    vertical = 83,  //use this to move verticaly
+    currentLevel = 1; //set the level
 
 // Create SuperClass
 var Item = function(x , y, sprite) {
