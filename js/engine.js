@@ -109,27 +109,33 @@ var Engine = (function(global) {
 
     // Check if an Item in the game made a collision with teh player
     function checkCollisions() {
-      // Check Enemy collision
-      for (i = 0; i < allEnemies.length; i++) {
-        if (playerCollide(allEnemies[i])) {
-          player.startPosition();
-          player.key = false;
-          door.openCloseDoor();
-        }
-      }
-
       // Check key collision
       if (playerCollide(key)) {
         player.key = true;
-        door.openCloseDoor();
+        door.openDoor();
+        key.bindKey(player);
       }
       // Check rock collision
+
       // Check door collision
       if (playerCollide(door) && player.key) {
         player.key = false;
-        door.openCloseDoor();
+        door.startPosition();
         player.startPosition();
+        key.startPosition();
       }
+
+      // Check Enemy collision
+      for (i = 0; i < allEnemies.length; i++) {
+        if (playerCollide(allEnemies[i])) {
+
+          player.startPosition();
+          door.startPosition();
+          key.startPosition();
+          player.key = false;
+        }
+      }
+      
       // Check princess collision
     }
 
@@ -173,7 +179,7 @@ var Engine = (function(global) {
                                  'images/grass-block.png'    // Row 2 of 2 of grass
                                ]
                 }
-       };
+       }
 
 
       /* Loop through the number of rows and columns we've defined above
@@ -243,7 +249,8 @@ var Engine = (function(global) {
         'images/char-princess-girl.png',
         'images/closed-door.png',
         'images/open-door.png',
-        'images/key.png'
+        'images/key-big.png',
+        'images/key-small.png'
     ]);
     Resources.onReady(init);
 

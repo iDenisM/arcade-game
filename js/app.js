@@ -85,18 +85,7 @@ Enemy.prototype.update = function(dt) {
     }
 };
 
-var createEnemies = function(number) {
-  var enemies = [];
-  for (var i = 0; i < number; i++) {
-    enemies.push(new Enemy());
-    while (i > 0 && enemies[i - 1].y === enemies[i].y) {
-      console.log("Changing enemy " + i + " y coordinate");
-      enemies[i] = new Enemy();
-      console.log("Enemy " + i + " y:" + enemies[i].y);
-    }
-  }
-  return enemies;
-};
+
 
 /*
 **PLAYER
@@ -153,38 +142,40 @@ Player.prototype.startPosition = function() {
 */
 var Key = function(x, y, sprite) {
   Item.call(this, x, y, sprite);
-  this.x = 1 * horisontal;
-  this.y = 0 * vertical;
-  this.sprite = 'images/key.png';
 };
 
 createSubClass(Item, Key);
 
 Key.prototype.startPosition = function() {
-  key.x = 1 * horisontal;
-  key.y = 0 * vertical;
-}
+  this.x = 1 * horisontal;
+  this.y = 0 * vertical;
+  this.sprite = 'images/key-big.png';
+};
+
+Key.prototype.bindKey = function(obj) {
+  this.x = obj.x;
+  this.y = obj.y;
+  this.sprite = 'images/key-small.png';
+};
 
 /*
 **DOOR
 */
 var Door = function(x, y, sprite) {
   Item.call(this, x, y, sprite);
-  this.x = 4 * horisontal;
-  this.y = 5 * vertical;
-  this.openDoor = false;
-  this.sprite = 'images/closed-door.png';
 };
 
 createSubClass(Item, Door);
 
-Door.prototype.openCloseDoor = function() {
-  if (player.key) {
-    this.sprite = 'images/open-door.png';
-  } else {
-    this.sprite = 'images/closed-door.png';
-  }
-}
+Door.prototype.startPosition = function() {
+  this.x = 4 * horisontal;
+  this.y = 5 * vertical;
+  this.sprite = 'images/closed-door.png';
+};
+
+Door.prototype.openDoor = function() {
+  this.sprite = 'images/open-door.png';
+};
 
 /*
 **PRINCESS
@@ -193,12 +184,26 @@ Door.prototype.openCloseDoor = function() {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = createEnemies(3);
-var player = new Player();
-player.startPosition();
-var key = new Key();
-var door = new Door();
+var createEnemies = function(number) {
+  var enemies = [];
+  for (var i = 0; i < number; i++) {
+    enemies.push(new Enemy());
+    while (i > 0 && enemies[i - 1].y === enemies[i].y) {
+      console.log("Changing enemy " + i + " y coordinate");
+      enemies[i] = new Enemy();
+      console.log("Enemy " + i + " y:" + enemies[i].y);
+    }
+  }
+  return enemies;
+},
+    allEnemies = createEnemies(3),
+    player = new Player(),
+    key = new Key(),
+    door = new Door();
 
+player.startPosition();
+key.startPosition();
+door.startPosition();
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
