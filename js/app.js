@@ -25,6 +25,11 @@ Item.prototype.bBox = function(bX, bY, bW, bH) {
   // set width and heigth to 0 or center it in the board cell
   this.bBoxWidth = bW <= 0 || bW < 2 * bX ? 0 : bW - 2 * bX;
   this.bBoxHeight = bH <= 0 || bH < 2 * bY ? 0 : bH - 2 * bY;
+};
+
+// Draw the item on the screen, required method for game
+Item.prototype.render = function() {
+  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
   //Debugging bBox
   ctx.beginPath();
@@ -32,17 +37,15 @@ Item.prototype.bBox = function(bX, bY, bW, bH) {
   ctx.stroke();
 };
 
-// Draw the item on the screen, required method for game
-Item.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-
-}
-
 // This fucntion will create the new subclass object and constructor
-var createSubClass = function(subclass, superclass) {
+var createSubClass = function(superclass, subclass) {
   subclass.prototype = Object.create(superclass.prototype);
   subclass.prototype.constructor = subclass;
 };
+
+/*
+**ENEMY
+*/
 
 // Enemies our player must avoid
 var Enemy = function(x, y, sprite) {
@@ -57,7 +60,7 @@ var Enemy = function(x, y, sprite) {
 };
 
 // Create the Enemy object, and constructor
-createSubClass(Enemy, Item);
+createSubClass(Item, Enemy);
 
 // Generate a random value for the speed
 var randomSpeed = function() {
@@ -95,6 +98,10 @@ var createEnemies = function(number) {
   return enemies;
 };
 
+/*
+**PLAYER
+*/
+
 // Player class
 var Player = function(x, y, sprite) {
   // Superclass call
@@ -106,10 +113,11 @@ var Player = function(x, y, sprite) {
   // The image/sprite for our enemies, this uses
   // a helper we've provided to easily load images
   this.sprite = 'images/char-boy.png';
+  this.key = false;
 };
 
 // Create the Player object, and constructor
-createSubClass(Player, Item);
+createSubClass(Item, Player);
 
 // Update the players's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -136,23 +144,60 @@ Player.prototype.handleInput = function(key) {
 
 // Create a standart staring position for the Player
 Player.prototype.startPosition = function() {
-  player.x = 2 * horisontal;
-  player.y = 5 * vertical;
+  this.x = 2 * horisontal;
+  this.y = 5 * vertical;
+};
+
+/*
+**KEY
+*/
+var Key = function(x, y, sprite) {
+  Item.call(this, x, y, sprite);
+  this.x = 1 * horisontal;
+  this.y = 0 * vertical;
+  this.sprite = 'images/key.png';
+};
+
+createSubClass(Item, Key);
+
+Key.prototype.startPosition = function() {
+  key.x = 1 * horisontal;
+  key.y = 0 * vertical;
 }
 
-Player.prototype.setBBox = function() {
-  player.bBoxX += 10;
-  player.bBoxY += 10;
-  player.bBoxWidth -= 20;
-  player.bBoxHeight -= 20;
+/*
+**DOOR
+*/
+var Door = function(x, y, sprite) {
+  Item.call(this, x, y, sprite);
+  this.x = 4 * horisontal;
+  this.y = 5 * vertical;
+  this.openDoor = false;
+  this.sprite = 'images/closed-door.png';
+};
 
+createSubClass(Item, Door);
+
+Door.prototype.openCloseDoor = function() {
+  if (player.key) {
+    this.sprite = 'images/open-door.png';
+  } else {
+    this.sprite = 'images/closed-door.png';
+  }
 }
+
+/*
+**PRINCESS
+*/
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = createEnemies(3);
 var player = new Player();
 player.startPosition();
+var key = new Key();
+var door = new Door();
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

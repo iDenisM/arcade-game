@@ -97,21 +97,39 @@ var Engine = (function(global) {
         player.update();
     }
 
+    function playerCollide(objectToCollide) {
+      if (objectToCollide.bBoxX < player.bBoxX + player.bBoxWidth &&
+          objectToCollide.bBoxX + objectToCollide.bBoxWidth > player.bBoxX &&
+          objectToCollide.bBoxY < player.bBoxY + player.bBoxHeight &&
+          objectToCollide.bBoxY + objectToCollide.bBoxHeight > player.bBoxY) {
+        return true;
+      }
+      return false;
+    }
+
     // Check if an Item in the game made a collision with teh player
     function checkCollisions() {
       // Check Enemy collision
       for (i = 0; i < allEnemies.length; i++) {
-        if (allEnemies[i].bBoxX < player.bBoxX + player.bBoxWidth &&
-            allEnemies[i].bBoxX + allEnemies[i].bBoxWidth > player.bBoxX &&
-            allEnemies[i].bBoxY < player.bBoxY + player.bBoxHeight &&
-            allEnemies[i].bBoxY + allEnemies[i].bBoxHeight > player.bBoxY) {
+        if (playerCollide(allEnemies[i])) {
           player.startPosition();
+          player.key = false;
+          door.openCloseDoor();
         }
       }
 
       // Check key collision
+      if (playerCollide(key)) {
+        player.key = true;
+        door.openCloseDoor();
+      }
       // Check rock collision
       // Check door collision
+      if (playerCollide(door) && player.key) {
+        player.key = false;
+        door.openCloseDoor();
+        player.startPosition();
+      }
       // Check princess collision
     }
 
@@ -136,29 +154,25 @@ var Engine = (function(global) {
            row, col,
            level = {
          '1' : {
-                      'rowImages' : [
-                                      'images/water-block.png',   // Top row is water
-                                      'images/stone-block.png',   // Row 1 of 3 of stone
-                                      'images/stone-block.png',   // Row 2 of 3 of stone
-                                      'images/stone-block.png',   // Row 3 of 3 of stone
-                                      'images/grass-block.png',   // Row 1 of 2 of grass
-                                      'images/grass-block.png'    // Row 2 of 2 of grass
-                                    ],
-                      'key' : ['images/key.png', 1, 0],
-                      'door' : ['images/closed-door.png', 'images/open-door.png']
-                    },
+                'rowImages' : [
+                                'images/grass-block.png',   // Top row is water
+                                'images/stone-block.png',   // Row 1 of 3 of stone
+                                'images/stone-block.png',   // Row 2 of 3 of stone
+                                'images/stone-block.png',   // Row 3 of 3 of stone
+                                'images/grass-block.png',   // Row 1 of 2 of grass
+                                'images/grass-block.png'    // Row 2 of 2 of grass
+                              ]
+                },
           '2' : {
-                       'rowImages' : [
-                                       'images/stone-block.png',   // Top row is water
-                                       'images/stone-block.png',   // Row 1 of 3 of stone
-                                       'images/stone-block.png',   // Row 2 of 3 of stone
-                                       'images/stone-block.png',   // Row 3 of 3 of stone
-                                       'images/grass-block.png',   // Row 1 of 2 of grass
-                                       'images/grass-block.png'    // Row 2 of 2 of grass
-                                     ],
-                       'key' : ['images/key.png', 1, 0],
-                       'door' : ['images/closed-door.png', 'images/open-door.png']
-                     }
+                 'rowImages' : [
+                                 'images/water-block.png',   // Top row is water
+                                 'images/stone-block.png',   // Row 1 of 3 of stone
+                                 'images/stone-block.png',   // Row 2 of 3 of stone
+                                 'images/stone-block.png',   // Row 3 of 3 of stone
+                                 'images/grass-block.png',   // Row 1 of 2 of grass
+                                 'images/grass-block.png'    // Row 2 of 2 of grass
+                               ]
+                }
        };
 
 
@@ -179,7 +193,7 @@ var Engine = (function(global) {
               ctx.drawImage(Resources.get(level[levelNumber].rowImages[row]), col * horisontal, row * vertical);
           }
       }
-      ctx.drawImage(Resources.get(level[levelNumber].key[0]), 1 * horisontal, 0 * vertical);
+
     }
 
     /* This function is called by the render function and is called on each game
@@ -197,6 +211,12 @@ var Engine = (function(global) {
 
         player.render();
         player.bBox(15, 5, horisontal, vertical);
+
+        key.render();
+        key.bBox(5, 5, horisontal, vertical);
+
+        door.render();
+        door.bBox(5, 5, horisontal, vertical);
     }
 
     /* This function does nothing but it could have been a good place to
