@@ -97,15 +97,22 @@ var Engine = (function(global) {
         player.update();
     }
 
+    // Check if an Item in the game made a collision with teh player
     function checkCollisions() {
+      // Check Enemy collision
       for (i = 0; i < allEnemies.length; i++) {
-        if (player.bBoxX < allEnemies[i].bBoxX + allEnemies[i].bBoxWidth &&
-            player.bBoxX + player.bBoxWidth > allEnemies[i].bBoxX &&
-            player.bBoxY < allEnemies[i].bBoxY + allEnemies[i].bBoxHeight &&
-            player.bBoxY + player.bBoxHeight > allEnemies[i].bBoxY) {
+        if (allEnemies[i].bBoxX < player.bBoxX + player.bBoxWidth &&
+            allEnemies[i].bBoxX + allEnemies[i].bBoxWidth > player.bBoxX &&
+            allEnemies[i].bBoxY < player.bBoxY + player.bBoxHeight &&
+            allEnemies[i].bBoxY + allEnemies[i].bBoxHeight > player.bBoxY) {
           player.startPosition();
         }
       }
+
+      // Check key collision
+      // Check rock collision
+      // Check door collision
+      // Check princess collision
     }
 
     /* This function initially draws the "game level", it will then call

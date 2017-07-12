@@ -16,13 +16,14 @@ Item.prototype.update = function(dt) {
 
 };
 
-// Create the bounding box
+// Create the bounding box for the Item
 Item.prototype.bBox = function(bX, bY, bW, bH) {
   // Create the rectangle for the bounding box
   this.bBoxX = this.x + bX;
   this.bBoxY = this.y + bY + 50;
-  this.bBoxWidth = bW === 0 ? 0 : bW - 2 * bX;
-  this.bBoxHeight = bH === 0 ? 0 : bH - 2 * bY;
+  // set width and heigth to 0 or center it in the board cell
+  this.bBoxWidth = bW <= 0 || bW < 2 * bX ? 0 : bW - 2 * bX;
+  this.bBoxHeight = bH <= 0 || bH < 2 * bY ? 0 : bH - 2 * bY;
 
   //Debugging bBox
   ctx.beginPath();
