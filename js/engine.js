@@ -29,6 +29,8 @@ var Engine = (function(global) {
     canvas.height = 606;
     doc.body.appendChild(canvas);
 
+
+
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
@@ -123,19 +125,20 @@ var Engine = (function(global) {
         door.startPosition();
         player.startPosition();
         key.startPosition();
+        enemysNumber++;
+        currentLevel++;
       }
 
       // Check Enemy collision
       for (i = 0; i < allEnemies.length; i++) {
         if (playerCollide(allEnemies[i])) {
-
           player.startPosition();
           door.startPosition();
           key.startPosition();
           player.key = false;
         }
       }
-      
+
       // Check princess collision
     }
 
@@ -146,59 +149,76 @@ var Engine = (function(global) {
      * they are just drawing the entire screen over and over.
      */
     function render() {
-
-        renderLevels(currentLevel);
-        renderEntities();
+      renderLevels(currentLevel);
+      renderEntities();
     }
 
     function renderLevels(levelNumber) {
       /* This array holds the relative URL to the image used
        * for that particular row of the game level.
        */
-       var numRows = 6,
-           numCols = 5,
-           row, col,
-           level = {
-         '1' : {
-                'rowImages' : [
-                                'images/grass-block.png',   // Top row is water
-                                'images/stone-block.png',   // Row 1 of 3 of stone
-                                'images/stone-block.png',   // Row 2 of 3 of stone
-                                'images/stone-block.png',   // Row 3 of 3 of stone
-                                'images/grass-block.png',   // Row 1 of 2 of grass
-                                'images/grass-block.png'    // Row 2 of 2 of grass
-                              ]
-                },
-          '2' : {
-                 'rowImages' : [
-                                 'images/water-block.png',   // Top row is water
-                                 'images/stone-block.png',   // Row 1 of 3 of stone
-                                 'images/stone-block.png',   // Row 2 of 3 of stone
-                                 'images/stone-block.png',   // Row 3 of 3 of stone
-                                 'images/grass-block.png',   // Row 1 of 2 of grass
-                                 'images/grass-block.png'    // Row 2 of 2 of grass
-                               ]
-                }
-       }
+      var numRows = 6,
+          numCols = 5,
+          row, col,
+          levels = {
+                   '1' : {
+                          'rowImages' : [
+                                          'images/grass-block.png',   // Top row is water
+                                          'images/stone-block.png',   // Row 1 of 3 of stone
+                                          'images/stone-block.png',   // Row 2 of 3 of stone
+                                          'images/stone-block.png',   // Row 3 of 3 of stone
+                                          'images/grass-block.png',   // Row 1 of 2 of grass
+                                          'images/grass-block.png'    // Row 2 of 2 of grass
+                                        ],
+                          'enemiesNumber' : '3'
+                          },
+                    '2' : {
+                           'rowImages' : [
+                                           'images/water-block.png',   // Top row is water
+                                           'images/stone-block.png',   // Row 1 of 3 of stone
+                                           'images/stone-block.png',   // Row 2 of 3 of stone
+                                           'images/stone-block.png',   // Row 3 of 3 of stone
+                                           'images/grass-block.png',   // Row 1 of 2 of grass
+                                           'images/grass-block.png'    // Row 2 of 2 of grass
+                                         ],
+                            'enemiesNumber' : '4'
+                          },
+                    '3' : {
+                           'rowImages' : [
+                                           'images/water-block.png',   // Top row is water
+                                           'images/stone-block.png',   // Row 1 of 3 of stone
+                                           'images/stone-block.png',   // Row 2 of 3 of stone
+                                           'images/stone-block.png',   // Row 3 of 3 of stone
+                                           'images/water-block.png',   // Row 1 of 2 of grass
+                                           'images/grass-block.png'    // Row 2 of 2 of grass
+                                         ],
+                            'enemiesNumber' : '5'
+                          }
+                  };
+
 
 
       /* Loop through the number of rows and columns we've defined above
        * and, using the rowImages array, draw the correct image for that
        * portion of the "grid"
        */
-      for (row = 0; row < numRows; row++) {
+      if (levelNumber <= Object.keys(levels).length) {
+        for (row = 0; row < numRows; row++) {
           for (col = 0; col < numCols; col++) {
-              /* The drawImage function of the canvas' context element
-               * requires 3 parameters: the image to draw, the x coordinate
-               * to start drawing and the y coordinate to start drawing.
-               * We're using our Resources helpers to refer to our images
-               * so that we get the benefits of caching these images, since
-               * we're using them over and over.
-               */
-              // ctx.drawImage(Resources.get(rowImages[levelNumber - 1][row]), col * horisontal, row * vertical);
-              ctx.drawImage(Resources.get(level[levelNumber].rowImages[row]), col * horisontal, row * vertical);
+            /* The drawImage function of the canvas' context element
+             * requires 3 parameters: the image to draw, the x coordinate
+             * to start drawing and the y coordinate to start drawing.
+             * We're using our Resources helpers to refer to our images
+             * so that we get the benefits of caching these images, since
+             * we're using them over and over.
+             */
+            ctx.drawImage(Resources.get(levels[levelNumber].rowImages[row]), col * horisontal, row * vertical);
           }
+        }
+      } else {
+        winning();
       }
+
 
     }
 
@@ -207,22 +227,22 @@ var Engine = (function(global) {
      * on your enemy and player entities within app.js
      */
     function renderEntities() {
-        /* Loop through all of the objects within the allEnemies array and call
-         * the render function you have defined.
-         */
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
-            enemy.bBox(5, 5, horisontal, vertical);
-        });
+      /* Loop through all of the objects within the allEnemies array and call
+       * the render function you have defined.
+       */
+      allEnemies.forEach(function(enemy) {
+          enemy.render();
+          enemy.bBox(5, 5, horisontal, vertical);
+      });
 
-        player.render();
-        player.bBox(15, 5, horisontal, vertical);
+      player.render();
+      player.bBox(15, 5, horisontal, vertical);
 
-        key.render();
-        key.bBox(5, 5, horisontal, vertical);
+      key.render();
+      key.bBox(5, 5, horisontal, vertical);
 
-        door.render();
-        door.bBox(5, 5, horisontal, vertical);
+      door.render();
+      door.bBox(5, 5, horisontal, vertical);
     }
 
     /* This function does nothing but it could have been a good place to
@@ -230,7 +250,33 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+      // noop
+    }
+
+    function resetLevel() {
+
+    }
+
+    function gameOver() {
+
+    }
+
+    function clear() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+
+    }
+
+    function winning() {
+      clear();
+      for (i = 0; i < allEnemies.length; i++) {
+        allEnemies.pop();
+      }
+      for (i = 0; i < allPlayers.length; i++) {
+        allPlayers.pop();
+      }
+      // player.x = 1000;
+      // player.y = 1000;
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -238,19 +284,19 @@ var Engine = (function(global) {
      * all of these images are properly loaded our game will start.
      */
     Resources.load([
-        'images/stone-block.png',
-        'images/water-block.png',
-        'images/grass-block.png',
-        'images/enemy-bug.png',
-        'images/char-boy.png',
-        'images/char-cat-girl.png',
-        'images/char-horn-girl.png',
-        'images/char-pink-girl.png',
-        'images/char-princess-girl.png',
-        'images/closed-door.png',
-        'images/open-door.png',
-        'images/key-big.png',
-        'images/key-small.png'
+      'images/stone-block.png',
+      'images/water-block.png',
+      'images/grass-block.png',
+      'images/enemy-bug.png',
+      'images/char-boy.png',
+      'images/char-cat-girl.png',
+      'images/char-horn-girl.png',
+      'images/char-pink-girl.png',
+      'images/char-princess-girl.png',
+      'images/closed-door.png',
+      'images/open-door.png',
+      'images/key-big.png',
+      'images/key-small.png'
     ]);
     Resources.onReady(init);
 

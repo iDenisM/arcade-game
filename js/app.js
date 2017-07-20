@@ -1,7 +1,8 @@
 // Global variables
 var horisontal = 101, //use this to move horisontaly
     vertical = 83,  //use this to move verticaly
-    currentLevel = 1; //set the level
+    currentLevel = 1, //set the level
+    enemysNumber = 3;
 
 // Create SuperClass
 var Item = function(x , y, sprite) {
@@ -196,14 +197,21 @@ var createEnemies = function(number) {
   }
   return enemies;
 },
-    allEnemies = createEnemies(3),
-    player = new Player(),
+    allEnemies = createEnemies(enemysNumber),
+    //player = new Player(),
     key = new Key(),
     door = new Door();
 
-player.startPosition();
+var allPlayers = [];
+allPlayers.push(new Player());
+//player.startPosition();
+allPlayers[0].startPosition();
+var player = allPlayers[0];
 key.startPosition();
 door.startPosition();
+
+//var allObjects = [player, key, door];
+
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
