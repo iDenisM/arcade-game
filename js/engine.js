@@ -125,7 +125,7 @@ var Engine = (function(global) {
         door.startPosition();
         player.startPosition();
         key.startPosition();
-        enemysNumber++;
+        allEnemies.push(new Enemy());
         currentLevel++;
       }
 
@@ -215,6 +215,7 @@ var Engine = (function(global) {
             ctx.drawImage(Resources.get(levels[levelNumber].rowImages[row]), col * horisontal, row * vertical);
           }
         }
+        $("#level").text("Level " + levelNumber);
       } else {
         winning();
       }
@@ -250,7 +251,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-      // noop
+      clear();
     }
 
     function resetLevel() {
@@ -268,6 +269,9 @@ var Engine = (function(global) {
     }
 
     function winning() {
+      // Set the H3 tag with level id to empty
+      $("#level").text("");
+
       clear();
       for (i = 0; i < allEnemies.length; i++) {
         allEnemies.pop();

@@ -1,8 +1,9 @@
 // Global variables
-var horisontal = 101, //use this to move horisontaly
-    vertical = 83,  //use this to move verticaly
-    currentLevel = 1, //set the level
-    enemysNumber = 3;
+var horisontal = 101, // set the cell horisontal width
+    vertical = 83,  // set the cell vertical height
+    currentLevel = 1, // set the current level
+    enemiesNumber = 3, // set the starting enemies number
+    lives = 3; // set the game life amount
 
 // Create SuperClass
 var Item = function(x , y, sprite) {
@@ -197,7 +198,7 @@ var createEnemies = function(number) {
   }
   return enemies;
 },
-    allEnemies = createEnemies(enemysNumber),
+    allEnemies = createEnemies(enemiesNumber),
     //player = new Player(),
     key = new Key(),
     door = new Door();
