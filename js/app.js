@@ -190,10 +190,9 @@ var createEnemies = function(number) {
   var enemies = [];
   for (var i = 0; i < number; i++) {
     enemies.push(new Enemy());
+    // Check if the last created enemy isn't on the same lane
     while (i > 0 && enemies[i - 1].y === enemies[i].y) {
-      console.log("Changing enemy " + i + " y coordinate");
       enemies[i] = new Enemy();
-      console.log("Enemy " + i + " y:" + enemies[i].y);
     }
   }
   return enemies;
@@ -211,7 +210,14 @@ var player = allPlayers[0];
 key.startPosition();
 door.startPosition();
 
-//var allObjects = [player, key, door];
+// Create lives container
+var allLives = function() {
+  var livesHolder = [];
+  for (i = 0; i < lives; i++) {
+    livesHolder.push(new Item(i + horisontal, -50, 'images/Heart.png'));
+  }
+  return livesHolder;
+}
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

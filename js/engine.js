@@ -136,6 +136,7 @@ var Engine = (function(global) {
           door.startPosition();
           key.startPosition();
           player.key = false;
+          lives--;
         }
       }
 
@@ -236,6 +237,10 @@ var Engine = (function(global) {
           enemy.bBox(5, 5, horisontal, vertical);
       });
 
+      allLives.forEach(function(life) {
+          life.render();
+      });
+
       player.render();
       player.bBox(15, 5, horisontal, vertical);
 
@@ -300,7 +305,8 @@ var Engine = (function(global) {
       'images/closed-door.png',
       'images/open-door.png',
       'images/key-big.png',
-      'images/key-small.png'
+      'images/key-small.png',
+      'images/Heart.png'
     ]);
     Resources.onReady(init);
 
