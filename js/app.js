@@ -180,8 +180,29 @@ Door.prototype.openDoor = function() {
 };
 
 /*
-**PRINCESS
+** PRINCESS
 */
+
+
+/*
+** LIVES
+*/
+var Life = function(x, y, sprite) {
+  Item.call(this, x, y, sprite);
+  this.x = 0;
+  this.y = 5 * vertical;
+  this.sprite = 'images/Heart.png';
+};
+
+createSubClass(Item, Life);
+
+// Life.prototype.render = function() {
+//   ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 50, 50);
+// };
+
+Life.prototype.update = function(dt) {
+
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -211,13 +232,15 @@ key.startPosition();
 door.startPosition();
 
 // Create lives container
-var allLives = function() {
+var createLives = function(l) {
   var livesHolder = [];
-  for (i = 0; i < lives; i++) {
-    livesHolder.push(new Item(i + horisontal, -50, 'images/Heart.png'));
+  for (i = 0; i < l; i++) {
+    livesHolder.push(new Life());
+    livesHolder[i].x = i * horisontal;
   }
   return livesHolder;
-}
+};
+var allLives = createLives(lives);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

@@ -96,6 +96,9 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+        allLives.forEach(function(life) {
+          life.update(dt);
+        });
         player.update();
     }
 
@@ -135,8 +138,9 @@ var Engine = (function(global) {
           player.startPosition();
           door.startPosition();
           key.startPosition();
+          allLives.length < 1 ? gameOver() : allLives.pop();
+          console.log(allLives.length);
           player.key = false;
-          lives--;
         }
       }
 
@@ -264,7 +268,9 @@ var Engine = (function(global) {
     }
 
     function gameOver() {
-
+      console.log("GAME OVER");
+      reset();
+      clearEnemies();
     }
 
     function clear() {
@@ -273,14 +279,20 @@ var Engine = (function(global) {
 
     }
 
+    function clearEnemies() {
+      for (var i = 0; i < allEnemies.length; i++) {
+        allEnemies.pop();
+      }
+      for (i = 0; i < allEnemies.length; i++) {
+        allEnemies.pop();
+      }
+    }
     function winning() {
       // Set the H3 tag with level id to empty
       $("#level").text("");
 
       clear();
-      for (i = 0; i < allEnemies.length; i++) {
-        allEnemies.pop();
-      }
+      clearEnemies();
       for (i = 0; i < allPlayers.length; i++) {
         allPlayers.pop();
       }
