@@ -236,7 +236,7 @@ var createLives = function(l) {
   var livesHolder = [];
   for (i = 0; i < l; i++) {
     livesHolder.push(new Life());
-    livesHolder[i].x = i * horisontal;
+    livesHolder[i].x = i * 50;
   }
   return livesHolder;
 };

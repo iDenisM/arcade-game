@@ -135,11 +135,12 @@ var Engine = (function(global) {
       // Check Enemy collision
       for (i = 0; i < allEnemies.length; i++) {
         if (playerCollide(allEnemies[i])) {
+          // reset player door and key position
           player.startPosition();
           door.startPosition();
           key.startPosition();
+          // check if any lives left
           allLives.length < 1 ? gameOver() : allLives.pop();
-          console.log(allLives.length);
           player.key = false;
         }
       }
@@ -269,7 +270,7 @@ var Engine = (function(global) {
 
     function gameOver() {
       console.log("GAME OVER");
-      reset();
+      clear();
       clearEnemies();
     }
 
@@ -280,24 +281,13 @@ var Engine = (function(global) {
     }
 
     function clearEnemies() {
-      for (var i = 0; i < allEnemies.length; i++) {
-        allEnemies.pop();
-      }
-      for (i = 0; i < allEnemies.length; i++) {
-        allEnemies.pop();
-      }
+      allEnemies = [];
     }
     function winning() {
       // Set the H3 tag with level id to empty
       $("#level").text("");
-
       clear();
       clearEnemies();
-      for (i = 0; i < allPlayers.length; i++) {
-        allPlayers.pop();
-      }
-      // player.x = 1000;
-      // player.y = 1000;
     }
 
     /* Go ahead and load all of the images we know we're going to need to
