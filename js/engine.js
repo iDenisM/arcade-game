@@ -246,8 +246,12 @@ var Engine = (function(global) {
           life.render();
       });
 
-      player.render();
-      player.bBox(15, 5, horisontal, vertical);
+      // player.render();
+      // player.bBox(15, 5, horisontal, vertical);
+      allPlayers.forEach(function(player) {
+        player.render();
+        player.bBox(15, 5, horisontal, vertical);
+      });
 
       key.render();
       key.bBox(5, 5, horisontal, vertical);
