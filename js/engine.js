@@ -100,7 +100,7 @@ var Engine = (function(global) {
         life.update(dt);
       }
       for (pl of allPlayers) {
-        player.update(dt);
+        pl.update(dt);
       }
     }
 
@@ -122,7 +122,7 @@ var Engine = (function(global) {
       if (playerCollide(key)) {
         door.openDoor();
         for (pl of allPlayers) {
-          player.key = true;
+          pl.key = true;
           key.bindKey(pl);
         }
       }
@@ -152,7 +152,12 @@ var Engine = (function(global) {
           door.startPosition();
           key.startPosition();
           // check if any lives left
-          allLives.length <= 1 ? gameOver() : allLives.pop();
+          if (allLives.length <= 1) {
+            currentLevel = -2;
+            gameLoose();
+          } else {
+            allLives.pop();
+          }
         }
       }
 
@@ -219,7 +224,20 @@ var Engine = (function(global) {
        * and, using the rowImages array, draw the correct image for that
        * portion of the "grid"
        */
-      if (levelNumber <= Object.keys(levels).length) {
+      // Create start level to choose a player character
+      if (levelNumber === -1) {
+
+      }
+      // Create the game loose or win board
+      else if (levelNumber === -2) {
+        for (row = 0; row < numRows; row++) {
+          for (col = 0; col < numCols; col++) {
+            ctx.drawImage(Resources.get('images/grass-block.png'), col * horisontal, row * vertical);
+          }
+        }
+      }
+      // Create the normal level board
+      else if (levelNumber <= Object.keys(levels).length) {
         for (row = 0; row < numRows; row++) {
           for (col = 0; col < numCols; col++) {
             /* The drawImage function of the canvas' context element
@@ -234,7 +252,7 @@ var Engine = (function(global) {
         }
         $("#level").text("Level " + levelNumber);
       } else {
-        winning();
+        gameWin();
       }
 
 
@@ -280,28 +298,26 @@ var Engine = (function(global) {
 
     }
 
-    function gameOver() {
-      console.log("GAME OVER");
-      clear();
-      clearAll();
-    }
-
     function clear() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.beginPath();
-
-    }
-
-    function clearAll() {
       allEnemies = [];
       allPlayers = [];
       allLives = [];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
     }
-    function winning() {
+
+    function gameLoose() {
+      $("#level").text("");
+      clear();
+      console.log("GAME OVER");
+    }
+
+
+    function gameWin() {
       // Set the H3 tag with level id to empty
       $("#level").text("");
       clear();
-      clearAll();
+      console.log("WONDERFULL");
     }
 
     /* Go ahead and load all of the images we know we're going to need to

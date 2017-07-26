@@ -225,9 +225,9 @@ var createEnemies = function(number) {
 
 var allPlayers = [];
 allPlayers.push(new Player());
-//player.startPosition();
-allPlayers[0].startPosition();
-var player = allPlayers[0];
+for (pl of allPlayers) {
+  pl.startPosition();
+}
 key.startPosition();
 door.startPosition();
 
@@ -245,12 +245,14 @@ var allLives = createLives(lives);
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
-    var allowedKeys = {
+  var allowedKeys = {
         37: 'left',
         38: 'up',
         39: 'right',
         40: 'down'
-    };
+  };
 
-    player.handleInput(allowedKeys[e.keyCode]);
+  for (pl of allPlayers) {
+    pl.handleInput(allowedKeys[e.keyCode]);
+  }
 });
