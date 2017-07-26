@@ -81,8 +81,8 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-        updateEntities(dt);
-        checkCollisions();
+      updateEntities(dt);
+      checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -93,15 +93,15 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
-        });
-        allLives.forEach(function(life) {
-          life.update(dt);
-        });
-        allPlayers.forEach(function(player) {
-            player.update(dt);
-        });
+      for (enem of allEnemies) {
+        enem.update(dt);
+      }
+      for (life of allLives) {
+        life.update(dt);
+      }
+      for (pl of allPlayers) {
+        player.update(dt);
+      }
     }
 
     function playerCollide(objectToCollide) {
@@ -120,36 +120,39 @@ var Engine = (function(global) {
     function checkCollisions() {
       // Check key collision
       if (playerCollide(key)) {
-        allPlayers.forEach(function(player) {
-            player.key = true;
-        });
         door.openDoor();
-        key.bindKey(allPlayers[0]);
+        for (pl of allPlayers) {
+          player.key = true;
+          key.bindKey(pl);
+        }
       }
       // Check rock collision
 
       // Check door collision
-      if (playerCollide(door) && allPlayers[0].key) {
-        allPlayers[0].key = false;
-        door.startPosition();
-        allPlayers[0].startPosition();
-        key.startPosition();
-        allEnemies.push(new Enemy());
-        currentLevel++;
+      for (pl of allPlayers) {
+        if (playerCollide(door) && pl.key) {
+          pl.key = false;
+          pl.startPosition();
+          door.startPosition();
+          key.startPosition();
+          allEnemies.push(new Enemy());
+          currentLevel++;
+        }
       }
 
+
       // Check Enemy collision
-      for (i = 0; i < allEnemies.length; i++) {
-        if (playerCollide(allEnemies[i])) {
+      for (enem of allEnemies) {
+        if (playerCollide(enem)) {
           // reset player door and key position
-          allPlayers[0].startPosition();
+          for (pl of allPlayers) {
+            pl.startPosition();
+            pl.key = false;
+          }
           door.startPosition();
           key.startPosition();
           // check if any lives left
-          allLives.length < 1 ? gameOver() : allLives.pop();
-          allPlayers.forEach(function(player) {
-              player.key = false;
-          });
+          allLives.length <= 1 ? gameOver() : allLives.pop();
         }
       }
 
@@ -245,21 +248,19 @@ var Engine = (function(global) {
       /* Loop through all of the objects within the allEnemies array and call
        * the render function you have defined.
        */
-      allEnemies.forEach(function(enemy) {
-          enemy.render();
-          enemy.bBox(5, 5, horisontal, vertical);
-      });
+      for (enem of allEnemies) {
+        enem.render();
+        enem.bBox(5, 5, horisontal, vertical);
+      }
 
-      allLives.forEach(function(life) {
+      for (life of allLives) {
           life.render();
-      });
+      }
 
-      // player.render();
-      // player.bBox(15, 5, horisontal, vertical);
-      allPlayers.forEach(function(player) {
-        player.render();
-        player.bBox(15, 5, horisontal, vertical);
-      });
+      for (pl of allPlayers) {
+        pl.render();
+        pl.bBox(15, 5, horisontal, vertical);
+      }
 
       key.render();
       key.bBox(5, 5, horisontal, vertical);
@@ -273,7 +274,6 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-      clear();
     }
 
     function resetLevel() {
@@ -283,7 +283,7 @@ var Engine = (function(global) {
     function gameOver() {
       console.log("GAME OVER");
       clear();
-      clearEnemies();
+      clearAll();
     }
 
     function clear() {
@@ -292,15 +292,16 @@ var Engine = (function(global) {
 
     }
 
-    function clearEnemies() {
+    function clearAll() {
       allEnemies = [];
       allPlayers = [];
+      allLives = [];
     }
     function winning() {
       // Set the H3 tag with level id to empty
       $("#level").text("");
       clear();
-      clearEnemies();
+      clearAll();
     }
 
     /* Go ahead and load all of the images we know we're going to need to
