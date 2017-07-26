@@ -99,15 +99,19 @@ var Engine = (function(global) {
         allLives.forEach(function(life) {
           life.update(dt);
         });
-        player.update();
+        allPlayers.forEach(function(player) {
+            player.update(dt);
+        });
     }
 
     function playerCollide(objectToCollide) {
-      if (objectToCollide.bBoxX < player.bBoxX + player.bBoxWidth &&
-          objectToCollide.bBoxX + objectToCollide.bBoxWidth > player.bBoxX &&
-          objectToCollide.bBoxY < player.bBoxY + player.bBoxHeight &&
-          objectToCollide.bBoxY + objectToCollide.bBoxHeight > player.bBoxY) {
-        return true;
+      for (pl of allPlayers) {
+        if (objectToCollide.bBoxX < pl.bBoxX + pl.bBoxWidth &&
+            objectToCollide.bBoxX + objectToCollide.bBoxWidth > pl.bBoxX &&
+            objectToCollide.bBoxY < pl.bBoxY + pl.bBoxHeight &&
+            objectToCollide.bBoxY + objectToCollide.bBoxHeight > pl.bBoxY) {
+          return true;
+        }
       }
       return false;
     }
@@ -116,17 +120,19 @@ var Engine = (function(global) {
     function checkCollisions() {
       // Check key collision
       if (playerCollide(key)) {
-        player.key = true;
+        allPlayers.forEach(function(player) {
+            player.key = true;
+        });
         door.openDoor();
-        key.bindKey(player);
+        key.bindKey(allPlayers[0]);
       }
       // Check rock collision
 
       // Check door collision
-      if (playerCollide(door) && player.key) {
-        player.key = false;
+      if (playerCollide(door) && allPlayers[0].key) {
+        allPlayers[0].key = false;
         door.startPosition();
-        player.startPosition();
+        allPlayers[0].startPosition();
         key.startPosition();
         allEnemies.push(new Enemy());
         currentLevel++;
@@ -136,12 +142,14 @@ var Engine = (function(global) {
       for (i = 0; i < allEnemies.length; i++) {
         if (playerCollide(allEnemies[i])) {
           // reset player door and key position
-          player.startPosition();
+          allPlayers[0].startPosition();
           door.startPosition();
           key.startPosition();
           // check if any lives left
           allLives.length < 1 ? gameOver() : allLives.pop();
-          player.key = false;
+          allPlayers.forEach(function(player) {
+              player.key = false;
+          });
         }
       }
 
@@ -286,6 +294,7 @@ var Engine = (function(global) {
 
     function clearEnemies() {
       allEnemies = [];
+      allPlayers = [];
     }
     function winning() {
       // Set the H3 tag with level id to empty
