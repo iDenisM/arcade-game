@@ -217,19 +217,28 @@ var createEnemies = function(number) {
     }
   }
   return enemies;
-},
-    allEnemies = createEnemies(enemiesNumber),
-    //player = new Player(),
-    key = new Key(),
-    door = new Door();
+};
+var allEnemies = createEnemies(enemiesNumber),
+    allKeys = [],
+    allDoors = [],
+    allPlayers = [];
 
-var allPlayers = [];
+allKeys.push(new Key());
+allDoors.push(new Door());
 allPlayers.push(new Player());
-for (pl of allPlayers) {
-  pl.startPosition();
+// for (pl of allPlayers) {
+//   pl.startPosition();
+// }
+// key.startPosition();
+// door.startPosition();
+
+function startPos(...objs) {
+  for (obj of objs) {
+    obj.startPosition();
+  }
 }
-key.startPosition();
-door.startPosition();
+
+startPos(...allPlayers, ...allKeys, ...allDoors);
 
 // Create lives container
 var createLives = function(l) {

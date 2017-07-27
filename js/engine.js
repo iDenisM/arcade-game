@@ -119,24 +119,28 @@ var Engine = (function(global) {
     // Check if an Item in the game made a collision with teh player
     function checkCollisions() {
       // Check key collision
-      if (playerCollide(key)) {
-        door.openDoor();
-        for (pl of allPlayers) {
-          pl.key = true;
-          key.bindKey(pl);
+      for (key of allKeys) {
+        if (playerCollide(key)) {
+          for (door of allDoors) {
+            door.openDoor();
+          }
+          for (pl of allPlayers) {
+            pl.key = true;
+            key.bindKey(pl);
+          }
         }
       }
       // Check rock collision
 
       // Check door collision
-      for (pl of allPlayers) {
-        if (playerCollide(door) && pl.key) {
-          pl.key = false;
-          pl.startPosition();
-          door.startPosition();
-          key.startPosition();
-          allEnemies.push(new Enemy());
-          currentLevel++;
+      for (door of allDoors) {
+        for (pl of allPlayers) {
+          if (playerCollide(door) && pl.key) {
+            pl.key = false;
+            startPos(...allPlayers, ...allDoors, ...allKeys);
+            allEnemies.push(new Enemy());
+            currentLevel++;
+          }
         }
       }
 
@@ -280,11 +284,15 @@ var Engine = (function(global) {
         pl.bBox(15, 5, horisontal, vertical);
       }
 
-      key.render();
-      key.bBox(5, 5, horisontal, vertical);
+      for (key of allKeys) {
+        key.render();
+        key.bBox(5, 5, horisontal, vertical);
+      }
 
-      door.render();
-      door.bBox(5, 5, horisontal, vertical);
+      for (door of allDoors) {
+        door.render();
+        door.bBox(5, 5, horisontal, vertical);
+      }
     }
 
     /* This function does nothing but it could have been a good place to
@@ -302,6 +310,8 @@ var Engine = (function(global) {
       allEnemies = [];
       allPlayers = [];
       allLives = [];
+      allKeys = [];
+      allDoors = [];
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
     }
