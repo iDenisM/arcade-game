@@ -1,9 +1,17 @@
 // Global variables
-var horisontal = 101, // set the cell horisontal width
-    vertical = 83,  // set the cell vertical height
-    currentLevel = 1, // set the current level
+const playerSprites = ['images/Selector.png',
+                      'images/char-boy.png',
+                      'images/char-cat-girl.png',
+                      'images/char-horn-girl.png',
+                      'images/char-pink-girl.png',
+                      'images/char-princess-girl.png'],
+      horisontal = 101, // set the cell horisontal width
+      vertical = 83;  // set the cell vertical height
+
+let currentLevel = 0, // set the current level
     enemiesNumber = 3, // set the starting enemies number
-    lives = 3; // set the game life amount
+    lives = 3, // set the game life amount
+    playerSprite = 0;
 
 // Create SuperClass
 var Item = function(x , y, sprite) {
@@ -101,9 +109,8 @@ var Player = function(x, y, sprite) {
   // we've provided one for you to get started
   this.x = x * horisontal;
   this.y = y * vertical;
-  // The image/sprite for our enemies, this uses
-  // a helper we've provided to easily load images
-  this.sprite = 'images/char-boy.png';
+  this.move = true;
+  this.sprite = sprite;
   this.key = false;
 };
 
@@ -120,16 +127,33 @@ Player.prototype.update = function(dt) {
 
 // Handle the inputs from the players keybo
 Player.prototype.handleInput = function(key) {
-  // var horisontal = 101,
-      // vertical = 83;
-  if (key === 'left' && this.x !== 0) {
-    this.x -= horisontal;
-  } else if (key === 'up' && this.y !== 0) {
-    this.y -= vertical;
-  } else if (key === 'right' && this.x !== horisontal * 4) {
-    this.x += horisontal;
-  } else if (key === 'down' && this.y !== vertical * 5) {
-    this.y += vertical;
+  if (this.move) {
+    if (key === 'left' && this.x !== 0 && currentLevel >= 0) {
+      this.x -= horisontal;
+      /*This part shold work only on preLeves statement
+       *This way when you loose and turn back the selector will remember last
+       *sectected character and will stay there
+       */
+      if (currentLevel === 0) {
+        playerSprite--;
+        if (playerSprite < 0)
+          playerSprite = 0;
+      }
+    } else if (key === 'up' && this.y !== 0 && currentLevel >= 1) {
+      this.y -= vertical;
+    } else if (key === 'right' && this.x !== horisontal * 4 && currentLevel >= 0) {
+      this.x += horisontal;
+      if (currentLevel === 0) {
+        playerSprite++;
+        if (playerSprite > 4)
+          playerSprite = 4;
+      }
+    } else if (key === 'down' && this.y !== vertical * 5 && currentLevel >= 1) {
+      this.y += vertical;
+    } else if (key === 'enter' && currentLevel === 0) {
+      currentLevel = 1;
+      createLevelsBlock();
+    }
   }
 };
 
@@ -223,22 +247,39 @@ var allEnemies = createEnemies(enemiesNumber),
     allDoors = [],
     allPlayers = [];
 
-allKeys.push(new Key());
-allDoors.push(new Door());
-allPlayers.push(new Player());
-// for (pl of allPlayers) {
-//   pl.startPosition();
-// }
-// key.startPosition();
-// door.startPosition();
-
+// This function loops the objs array and puts them in thery startPosition
 function startPos(...objs) {
   for (obj of objs) {
     obj.startPosition();
   }
 }
 
-startPos(...allPlayers, ...allKeys, ...allDoors);
+allKeys.push(new Key());
+allDoors.push(new Door());
+
+//
+function createPreLevelsBlock() {
+  allPlayers = [];
+  allPlayers.push(new Player(playerSprite, 2, playerSprites[0]));
+  for (var i = 1; i < playerSprites.length; i++) {
+    allPlayers.push(new Player(i - 1, 2, playerSprites[i]));
+    allPlayers[i].move = false;
+  }
+}
+
+createPreLevelsBlock();
+
+function createLevelsBlock() {
+  allPlayers = [];
+  allPlayers.push(new Player(1, 1, playerSprites[playerSprite + 1]));
+  for (allPlayer of allPlayers) {
+    allPlayer.move = true;
+  }
+  startPos(...allPlayers);
+}
+
+
+startPos(...allKeys, ...allDoors);
 
 // Create lives container
 var createLives = function(l) {
@@ -258,7 +299,8 @@ document.addEventListener('keyup', function(e) {
         37: 'left',
         38: 'up',
         39: 'right',
-        40: 'down'
+        40: 'down',
+        13: 'enter'
   };
 
   for (pl of allPlayers) {

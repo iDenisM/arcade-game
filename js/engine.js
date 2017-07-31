@@ -85,6 +85,10 @@ var Engine = (function(global) {
       checkCollisions();
     }
 
+    function checkLevelStatus() {
+
+    }
+
     /* This is called by the update function and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
      * their update() methods. It will then call the update function for your
@@ -229,11 +233,15 @@ var Engine = (function(global) {
        * portion of the "grid"
        */
       // Create start level to choose a player character
-      if (levelNumber === -1) {
-
+      if (levelNumber === 0) {
+        for (row = 0; row < numRows; row++) {
+          for (col = 0; col < numCols; col++) {
+            ctx.drawImage(Resources.get('images/grass-block.png'), col * horisontal, row * vertical);
+          }
+        }
       }
       // Create the game loose or win board
-      else if (levelNumber === -2) {
+      else if (levelNumber === -1) {
         for (row = 0; row < numRows; row++) {
           for (col = 0; col < numCols; col++) {
             ctx.drawImage(Resources.get('images/grass-block.png'), col * horisontal, row * vertical);
@@ -270,28 +278,30 @@ var Engine = (function(global) {
       /* Loop through all of the objects within the allEnemies array and call
        * the render function you have defined.
        */
-      for (enem of allEnemies) {
-        enem.render();
-        enem.bBox(5, 5, horisontal, vertical);
-      }
-
-      for (life of allLives) {
-          life.render();
-      }
-
       for (pl of allPlayers) {
-        pl.render();
-        pl.bBox(15, 5, horisontal, vertical);
+       pl.render();
+       pl.bBox(15, 5, horisontal, vertical);
       }
+      if (currentLevel >= 1) {
+        for (enem of allEnemies) {
+          enem.render();
+          enem.bBox(5, 5, horisontal, vertical);
+        }
 
-      for (key of allKeys) {
-        key.render();
-        key.bBox(5, 5, horisontal, vertical);
-      }
+        for (life of allLives) {
+          life.render();
+        }
 
-      for (door of allDoors) {
-        door.render();
-        door.bBox(5, 5, horisontal, vertical);
+
+        for (key of allKeys) {
+          key.render();
+          key.bBox(5, 5, horisontal, vertical);
+        }
+
+        for (door of allDoors) {
+          door.render();
+          door.bBox(5, 5, horisontal, vertical);
+        }
       }
     }
 
@@ -311,7 +321,7 @@ var Engine = (function(global) {
       allPlayers = [];
       allLives = [];
       allKeys = [];
-      allDoors = [];  
+      allDoors = [];
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
     }
@@ -348,7 +358,8 @@ var Engine = (function(global) {
       'images/open-door.png',
       'images/key-big.png',
       'images/key-small.png',
-      'images/Heart.png'
+      'images/Heart.png',
+      'images/Selector.png'
     ]);
     Resources.onReady(init);
 
