@@ -275,7 +275,7 @@ Door.prototype.openDoor = function() {
 /*
 ** LIVES
 */
-var Life = function(x, y, sprite) {
+let Life = function(x, y, sprite) {
   Item.call(this, x, y, sprite);
   this.x = 0;
   this.y = 5 * vertical;
@@ -295,21 +295,20 @@ Life.prototype.update = function(dt) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var createEnemies = function(number) {
-  var enemies = [];
-  for (var i = 0; i < number; i++) {
-    enemies.push(new Enemy());
-    // Check if the last created enemy isn't on the same lane
-    while (i > 0 && enemies[i - 1].y === enemies[i].y) {
-      enemies[i] = new Enemy();
-    }
-  }
-  return enemies;
-};
-var allEnemies = createEnemies(enemiesNumber),
-    allKeys = [],
+let allKeys = [],
     allDoors = [],
-    allPlayers = [];
+    allPlayers = [],
+    createEnemies = number => {
+      var enemies = [];
+      for (var i = 0; i < number; i++) {
+        enemies.push(new Enemy());
+        // Check if the last created enemy isn't on the same lane
+        while (i > 0 && enemies[i - 1].y === enemies[i].y) {
+          enemies[i] = new Enemy();
+        }
+      }
+      return enemies;
+    };
 
 // This function loops the objs array and puts them in thery startPosition
 let startPos = (...objs) => {
@@ -318,7 +317,7 @@ let startPos = (...objs) => {
   }
 }
 
-
+// This function clears all the array containers
 let emptyAllContainers = () => {
   allEnemies = [];
   allPlayers = [];
@@ -343,8 +342,7 @@ let createEndLevelBlock = () => {
   allPlayers.push(new Player(1, 3, 0));
 };
 
-
-
+// Create the level block
 let createLevelsBlock = () => {
   currentLevel = 1;
   allPlayers = [];
@@ -355,8 +353,6 @@ let createLevelsBlock = () => {
   startPos(...allKeys, ...allDoors);
   allEnemies = createEnemies(enemiesNumber);
 };
-
-
 
 // Create lives container
 var createLives = l => {
