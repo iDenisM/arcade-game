@@ -312,48 +312,54 @@ var allEnemies = createEnemies(enemiesNumber),
     allPlayers = [];
 
 // This function loops the objs array and puts them in thery startPosition
-function startPos(...objs) {
+let startPos = (...objs) => {
   for (obj of objs) {
     obj.startPosition();
   }
 }
 
-allKeys.push(new Key());
-allDoors.push(new Door());
 
-//
-function createPreLevelsBlock() {
-  currentLevel = 0;
-  chooseYesNo = 0;
-  allPlayers = [];
-  allLives = [];
-  allPlayers.push(new Player(0, 3, 0));
-}
-
-createPreLevelsBlock();
-
-function createEndLevelBlock() {
-  currentLevel = -1;
+let emptyAllContainers = () => {
   allEnemies = [];
   allPlayers = [];
   allLives = [];
   allKeys = [];
   allDoors = [];
-  allPlayers.push(new Player(1, 3, 0));
-}
+};
 
-function createLevelsBlock() {
+// Create the pre level block
+let createPreLevelsBlock = () => {
+  currentLevel = 0;
+  chooseYesNo = 0;
+  playerSprite = 1;
+  emptyAllContainers();
+  allPlayers.push(new Player(0, 3, 0));
+};
+
+// Create the end level block
+let createEndLevelBlock = () => {
+  currentLevel = -1;
+  emptyAllContainers();
+  allPlayers.push(new Player(1, 3, 0));
+};
+
+
+
+let createLevelsBlock = () => {
   currentLevel = 1;
   allPlayers = [];
   allPlayers.push(new Player(2, 5, playerSprite));
+  allKeys.push(new Key());
+  allDoors.push(new Door());
   allLives = createLives(lives);
   startPos(...allKeys, ...allDoors);
-}
+  allEnemies = createEnemies(enemiesNumber);
+};
 
 
 
 // Create lives container
-var createLives = function(l) {
+var createLives = l => {
   var livesHolder = [];
   for (i = 0; i < l; i++) {
     livesHolder.push(new Life());
@@ -361,7 +367,6 @@ var createLives = function(l) {
   }
   return livesHolder;
 };
-// var allLives = createLives(lives);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

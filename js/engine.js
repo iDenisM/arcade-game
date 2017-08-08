@@ -59,6 +59,8 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         win.requestAnimationFrame(main);
+
+
     }
 
     /* This function does some initial setup that should only occur once,
@@ -66,9 +68,10 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
-        lastTime = Date.now();
-        main();
+      createPreLevelsBlock();
+      reset();
+      lastTime = Date.now();
+      main();
     }
 
     /* This function is called by main (our game loop) and itself calls all
