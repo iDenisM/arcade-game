@@ -11,7 +11,9 @@ const playerSprites = ['images/Selector.png',
 let currentLevel = 0, // set the current level
     enemiesNumber = 3, // set the starting enemies number
     lives = 3, // set the game life amount
-    playerSprite = 0;
+    playerSprite = 1, // counts the index in the playerSprites array
+    chooseYesNo = 0, // holds the position of the cursor
+    allLives = [];
 
 // Create SuperClass
 var Item = function(x , y, sprite) {
@@ -110,8 +112,27 @@ var Player = function(x, y, sprite) {
   this.x = x * horisontal;
   this.y = y * vertical;
   this.move = true;
-  this.sprite = sprite;
+  // this.sprite = sprite;
   this.key = false;
+  switch (sprite) {
+    case 0:
+      this.sprite = 'images/Selector.png';
+      break;
+    case 1:
+      this.sprite = 'images/char-boy.png';
+      break;
+    case 2:
+      this.sprite = 'images/char-cat-girl.png';
+      break;
+    case 3:
+      this.sprite = 'images/char-horn-girl.png';
+      break;
+    case 4:
+      this.sprite = 'images/char-pink-girl.png';
+      break;
+    case 5:
+      this.sprite = 'images/char-princess-girl.png';
+  }
 };
 
 // Create the Player object, and constructor
@@ -127,32 +148,80 @@ Player.prototype.update = function(dt) {
 
 // Handle the inputs from the players keybo
 Player.prototype.handleInput = function(key) {
+  console.log(`before chooseYesNo: ${chooseYesNo}`);
   if (this.move) {
-    if (key === 'left' && this.x !== 0 && currentLevel >= 0) {
-      this.x -= horisontal;
-      /*This part shold work only on preLeves statement
-       *This way when you loose and turn back the selector will remember last
-       *sectected character and will stay there
-       */
-      if (currentLevel === 0) {
-        playerSprite--;
-        if (playerSprite < 0)
-          playerSprite = 0;
+    if (key === 'left') {
+      switch (true) {
+        case (currentLevel === 0):
+          if (this.x !== 0) {
+            playerSprite--;
+            this.x -= horisontal;
+            this.y = 3 * vertical;
+            console.log(`playerSprite: ${playerSprite}`);
+          }
+          break;
+        case (currentLevel === -1):
+          if (this.x !== horisontal) {
+            chooseYesNo = 0;
+            this.x = horisontal;
+            this.y = 3 * vertical;
+            console.log(`chooseYesNo: ${chooseYesNo}`);
+          }
+          break;
+        case (currentLevel >= 1):
+          if (this.x !== 0) {
+            this.x -= horisontal;
+          }
       }
     } else if (key === 'up' && this.y !== 0 && currentLevel >= 1) {
-      this.y -= vertical;
-    } else if (key === 'right' && this.x !== horisontal * 4 && currentLevel >= 0) {
-      this.x += horisontal;
-      if (currentLevel === 0) {
-        playerSprite++;
-        if (playerSprite > 4)
-          playerSprite = 4;
+      switch (true) {
+        case (currentLevel >= 1):
+          if (this.y !== 0) {
+            this.y -= vertical;
+          }
+      }
+    } else if (key === 'right') {
+      switch (true) {
+        case (currentLevel === 0):
+          if (this.x !== 4 * horisontal) {
+            playerSprite++;
+            this.x += horisontal;
+            this.y = 3 * vertical;
+            console.log(`playerSprite: ${playerSprite}`);
+          }
+          break;
+        case (currentLevel === -1):
+          if (this.x !== 3 * horisontal) {
+            this.x = 3 * horisontal;
+            this.y = 3 * vertical;
+            chooseYesNo = 1;
+            console.log(`chooseYesNo: ${chooseYesNo}`);
+          }
+          break;
+        case (currentLevel >= 1):
+          if (this.x !== 4 * horisontal) {
+            this.x += horisontal;
+          }
       }
     } else if (key === 'down' && this.y !== vertical * 5 && currentLevel >= 1) {
-      this.y += vertical;
-    } else if (key === 'enter' && currentLevel === 0) {
-      currentLevel = 1;
-      createLevelsBlock();
+      switch (true) {
+        case (currentLevel >= 1):
+          if (this.y !== 5 * vertical) {
+            this.y += vertical;
+          }
+      }
+    } else if (key === 'enter') {
+      if (currentLevel === 0) {
+        createLevelsBlock();
+      }
+      if (currentLevel === -1) {
+        if (chooseYesNo === 1) {
+          allLives = createLives(lives);
+          createPreLevelsBlock();
+        }
+        else {
+        }
+      }
     }
   }
 };
@@ -202,11 +271,6 @@ Door.prototype.startPosition = function() {
 Door.prototype.openDoor = function() {
   this.sprite = 'images/open-door.png';
 };
-
-/*
-** PRINCESS
-*/
-
 
 /*
 ** LIVES
@@ -259,27 +323,34 @@ allDoors.push(new Door());
 
 //
 function createPreLevelsBlock() {
+  currentLevel = 0;
+  chooseYesNo = 0;
   allPlayers = [];
-  allPlayers.push(new Player(playerSprite, 2, playerSprites[0]));
-  for (var i = 1; i < playerSprites.length; i++) {
-    allPlayers.push(new Player(i - 1, 2, playerSprites[i]));
-    allPlayers[i].move = false;
-  }
+  allLives = [];
+  allPlayers.push(new Player(0, 3, 0));
 }
 
 createPreLevelsBlock();
 
-function createLevelsBlock() {
+function createEndLevelBlock() {
+  currentLevel = -1;
+  allEnemies = [];
   allPlayers = [];
-  allPlayers.push(new Player(1, 1, playerSprites[playerSprite + 1]));
-  for (allPlayer of allPlayers) {
-    allPlayer.move = true;
-  }
-  startPos(...allPlayers);
+  allLives = [];
+  allKeys = [];
+  allDoors = [];
+  allPlayers.push(new Player(1, 3, 0));
+}
+
+function createLevelsBlock() {
+  currentLevel = 1;
+  allPlayers = [];
+  allPlayers.push(new Player(2, 5, playerSprite));
+  allLives = createLives(lives);
+  startPos(...allKeys, ...allDoors);
 }
 
 
-startPos(...allKeys, ...allDoors);
 
 // Create lives container
 var createLives = function(l) {
@@ -290,7 +361,7 @@ var createLives = function(l) {
   }
   return livesHolder;
 };
-var allLives = createLives(lives);
+// var allLives = createLives(lives);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

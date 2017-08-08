@@ -139,7 +139,7 @@ var Engine = (function(global) {
       // Check door collision
       for (door of allDoors) {
         for (pl of allPlayers) {
-          if (playerCollide(door) && pl.key) {
+          if (playerCollide(door) && pl.key && currentLevel > 0) {
             pl.key = false;
             startPos(...allPlayers, ...allDoors, ...allKeys);
             allEnemies.push(new Enemy());
@@ -152,19 +152,19 @@ var Engine = (function(global) {
       // Check Enemy collision
       for (enem of allEnemies) {
         if (playerCollide(enem)) {
-          // reset player door and key position
-          for (pl of allPlayers) {
-            pl.startPosition();
-            pl.key = false;
-          }
-          door.startPosition();
-          key.startPosition();
           // check if any lives left
-          if (allLives.length <= 1) {
-            currentLevel = -2;
-            gameLoose();
-          } else {
+          if (allLives.length <= 1 && currentLevel > 0) {
+            createEndLevelBlock();
+          }
+          else {
             allLives.pop();
+            // reset player door and key position
+            for (pl of allPlayers) {
+              pl.startPosition();
+              pl.key = false;
+            }
+            door.startPosition();
+            key.startPosition();
           }
         }
       }
@@ -239,17 +239,35 @@ var Engine = (function(global) {
             ctx.drawImage(Resources.get('images/grass-block.png'), col * horisontal, row * vertical);
           }
         }
+        // Draw the characters to choose
+        ctx.drawImage(Resources.get('images/char-boy.png'), 0, 3 * vertical);
+        ctx.drawImage(Resources.get('images/char-cat-girl.png'), 1 * horisontal, 3 * vertical);
+        ctx.drawImage(Resources.get('images/char-horn-girl.png'), 2 * horisontal, 3 * vertical);
+        ctx.drawImage(Resources.get('images/char-pink-girl.png'), 3 * horisontal, 3 * vertical);
+        ctx.drawImage(Resources.get('images/char-princess-girl.png'), 4 * horisontal, 3 * vertical);
+        // Draw the text
+        ctx.font = '50px Arial';
+        ctx.fillText('CHOOSE YOUR', 60, 120);
+        ctx.fillText('CHARACTER', 100, 200);
       }
-      // Create the game loose or win board
+      // Create the game loose board
       else if (levelNumber === -1) {
+        // Draw the board
         for (row = 0; row < numRows; row++) {
           for (col = 0; col < numCols; col++) {
             ctx.drawImage(Resources.get('images/grass-block.png'), col * horisontal, row * vertical);
           }
         }
+        // Draw the text on the board
+        ctx.font = '50px Arial';
+        ctx.fillText('TAKE ANOTHER', 70, 170);
+        ctx.fillText('CHANCE', 150, 238);
+        ctx.font = '100px Arial';
+        ctx.fillText('N', 117, 378);
+        ctx.fillText('Y', 317, 378);
       }
       // Create the normal level board
-      else if (levelNumber <= Object.keys(levels).length) {
+      else if (levelNumber <= Object.keys(levels).length && levelNumber > 0) {
         for (row = 0; row < numRows; row++) {
           for (col = 0; col < numCols; col++) {
             /* The drawImage function of the canvas' context element
