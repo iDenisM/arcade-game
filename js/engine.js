@@ -128,9 +128,14 @@ var Engine = (function(global) {
       // Check key collision
       for (key of allKeys) {
         if (playerCollide(key)) {
+          // Add points on key collision
+          if (!allPlayers[0].key)
+            playerScore += 50;
+          // Open the door
           for (door of allDoors) {
             door.openDoor();
           }
+          // Change player status on key collision
           for (pl of allPlayers) {
             pl.key = true;
             key.bindKey(pl);
@@ -143,6 +148,7 @@ var Engine = (function(global) {
       for (door of allDoors) {
         for (pl of allPlayers) {
           if (playerCollide(door) && pl.key && currentLevel > 0) {
+            playerScore += 150;
             pl.key = false;
             startPos(...allPlayers, ...allDoors, ...allKeys);
             allEnemies.push(new Enemy());
@@ -150,7 +156,6 @@ var Engine = (function(global) {
           }
         }
       }
-
 
       // Check Enemy collision
       for (enem of allEnemies) {
@@ -160,6 +165,8 @@ var Engine = (function(global) {
             createEndLevelBlock();
           }
           else {
+            playerScore -= 50;
+            playerScore < 0 ? playerScore = 0 : playerScore = playerScore;
             allLives.pop();
             // reset player door and key position
             for (pl of allPlayers) {
@@ -252,6 +259,7 @@ var Engine = (function(global) {
         ctx.font = '50px Arial';
         ctx.fillText('CHOOSE YOUR', 60, 120);
         ctx.fillText('CHARACTER', 100, 200);
+        $("#level").text("You can choose you character");
       }
       // Create the game loose board
       else if (levelNumber === -1) {
@@ -268,6 +276,8 @@ var Engine = (function(global) {
         ctx.font = '100px Arial';
         ctx.fillText('N', 117, 378);
         ctx.fillText('Y', 317, 378);
+        // Description text
+        $("#level").text("You loose :(");
       }
       // Create the normal level board
       else if (levelNumber <= Object.keys(levels).length && levelNumber > 0) {
@@ -284,6 +294,7 @@ var Engine = (function(global) {
           }
         }
         $("#level").text("Level " + levelNumber);
+        $("#score").text("Score " + playerScore);
       } else {
         gameWin();
       }

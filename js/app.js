@@ -1,22 +1,17 @@
 // Global variables
-const playerSprites = ['images/Selector.png',
-                      'images/char-boy.png',
-                      'images/char-cat-girl.png',
-                      'images/char-horn-girl.png',
-                      'images/char-pink-girl.png',
-                      'images/char-princess-girl.png'],
-      horisontal = 101, // set the cell horisontal width
+const horisontal = 101, // set the cell horisontal width
       vertical = 83;  // set the cell vertical height
 
 let currentLevel = 0, // set the current level
     enemiesNumber = 3, // set the starting enemies number
     lives = 3, // set the game life amount
-    playerSprite = 1, // counts the index in the playerSprites array
+    playerSprite = 1, // selects the player sprite to draw
     chooseYesNo = 0, // holds the position of the cursor
-    allLives = [];
+    allLives = [], // array holder for the player lives
+    playerScore = 0; // this is the in game player score
 
 // Create SuperClass
-var Item = function(x , y, sprite) {
+let Item = function(x , y, sprite) {
   this.x = x;
   this.y = y;
   this.sprite = sprite;
@@ -50,7 +45,7 @@ Item.prototype.render = function() {
 };
 
 // This fucntion will create the new subclass object and constructor
-var createSubClass = function(superclass, subclass) {
+let createSubClass = function(superclass, subclass) {
   subclass.prototype = Object.create(superclass.prototype);
   subclass.prototype.constructor = subclass;
 };
@@ -60,7 +55,7 @@ var createSubClass = function(superclass, subclass) {
 */
 
 // Enemies our player must avoid
-var Enemy = function(x, y, sprite) {
+let Enemy = function(x, y, sprite) {
   // Superclass call
   Item.call(this, x, y, sprite);
   // Variables applied to each of our instances go here,
@@ -75,13 +70,13 @@ var Enemy = function(x, y, sprite) {
 createSubClass(Item, Enemy);
 
 // Generate a random value for the speed
-var randomSpeed = function() {
+let randomSpeed = function() {
   return Math.random()*100 + 70;
 };
 
 // Generate a random value for the speed
-var randomYPosition = function() {
-  var min = 1,
+let randomYPosition = function() {
+  let min = 1,
       max = 4;
   return (Math.floor(Math.random() * (max - min)) + min) * vertical;
 };
@@ -104,7 +99,7 @@ Enemy.prototype.update = function(dt) {
 */
 
 // Player class
-var Player = function(x, y, sprite) {
+let Player = function(x, y, sprite) {
   // Superclass call
   Item.call(this, x, y, sprite);
   // Variables applied to each of our instances go here,
@@ -235,7 +230,7 @@ Player.prototype.startPosition = function() {
 /*
 **KEY
 */
-var Key = function(x, y, sprite) {
+let Key = function(x, y, sprite) {
   Item.call(this, x, y, sprite);
 };
 
@@ -256,7 +251,7 @@ Key.prototype.bindKey = function(obj) {
 /*
 **DOOR
 */
-var Door = function(x, y, sprite) {
+let Door = function(x, y, sprite) {
   Item.call(this, x, y, sprite);
 };
 
@@ -299,8 +294,8 @@ let allKeys = [],
     allDoors = [],
     allPlayers = [],
     createEnemies = number => {
-      var enemies = [];
-      for (var i = 0; i < number; i++) {
+      let enemies = [];
+      for (let i = 0; i < number; i++) {
         enemies.push(new Enemy());
         // Check if the last created enemy isn't on the same lane
         while (i > 0 && enemies[i - 1].y === enemies[i].y) {
@@ -355,8 +350,8 @@ let createLevelsBlock = () => {
 };
 
 // Create lives container
-var createLives = l => {
-  var livesHolder = [];
+let createLives = l => {
+  let livesHolder = [];
   for (i = 0; i < l; i++) {
     livesHolder.push(new Life());
     livesHolder[i].x = i * 50;
@@ -367,7 +362,7 @@ var createLives = l => {
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
-  var allowedKeys = {
+  let allowedKeys = {
         37: 'left',
         38: 'up',
         39: 'right',
