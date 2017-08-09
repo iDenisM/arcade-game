@@ -39,9 +39,9 @@ Item.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
   //Debugging bBox
-  ctx.beginPath();
-  ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
-  ctx.stroke();
+  // ctx.beginPath();
+  // ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
+  // ctx.stroke();
 };
 
 // This fucntion will create the new subclass object and constructor
@@ -279,14 +279,30 @@ let Life = function(x, y, sprite) {
 
 createSubClass(Item, Life);
 
-// Life.prototype.render = function() {
-//   ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 50, 50);
-// };
-
 Life.prototype.update = function(dt) {
 
 };
 
+/*
+** ROCK
+*/
+let Rock = function(x, y, sprite) {
+  Item.call(this, x, y, sprite);
+  this.x = 3 * horisontal;
+  this.y = 4 * vertical;
+  this.sprite = 'images/stone-block.png';
+};
+
+createSubClass(Item, Rock);
+
+Rock.prototype.update = function(dt) {
+
+};
+
+// Change the rock sprite when it is in the water
+Rock.prototype.rockInWater = function() {
+  this.sprite = 'images/stone-block.png';
+};
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
