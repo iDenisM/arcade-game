@@ -4,11 +4,48 @@ const horisontal = 101, // set the cell horisontal width
 
 let currentLevel = 0, // set the current level
     enemiesNumber = 3, // set the starting enemies number
+    rocksNumber = 1, // set the starting number of the rocks
     lives = 3, // set the game life amount
     playerSprite = 1, // selects the player sprite to draw
     chooseYesNo = 0, // holds the position of the cursor
     allLives = [], // array holder for the player lives
-    playerScore = 0; // this is the in game player score
+    playerScore = 0, // this is the in game player score
+    gameMap = Array(6).fill(0).map(x => Array(5).fill(0)),
+    levels = {
+             '1' : {
+                    'rowImages' : [
+                                    'images/grass-block.png',   // Top row is water
+                                    'images/stone-block.png',   // Row 1 of 3 of stone
+                                    'images/stone-block.png',   // Row 2 of 3 of stone
+                                    'images/stone-block.png',   // Row 3 of 3 of stone
+                                    'images/grass-block.png',   // Row 1 of 2 of grass
+                                    'images/grass-block.png'    // Row 2 of 2 of grass
+                                  ],
+                    'enemiesNumber' : '3'
+                    },
+              '2' : {
+                     'rowImages' : [
+                                     'images/water-block.png',   // Top row is water
+                                     'images/stone-block.png',   // Row 1 of 3 of stone
+                                     'images/stone-block.png',   // Row 2 of 3 of stone
+                                     'images/stone-block.png',   // Row 3 of 3 of stone
+                                     'images/grass-block.png',   // Row 1 of 2 of grass
+                                     'images/grass-block.png'    // Row 2 of 2 of grass
+                                   ],
+                      'enemiesNumber' : '4'
+                    },
+              '3' : {
+                     'rowImages' : [
+                                     'images/water-block.png',   // Top row is water
+                                     'images/stone-block.png',   // Row 1 of 3 of stone
+                                     'images/stone-block.png',   // Row 2 of 3 of stone
+                                     'images/water-block.png',   // Row 3 of 3 of water
+                                     'images/grass-block.png',   // Row 1 of 2 of grass
+                                     'images/grass-block.png'    // Row 2 of 2 of grass
+                                   ],
+                      'enemiesNumber' : '5'
+                    }
+            };
 
 // Create SuperClass
 let Item = function(x , y, sprite) {
@@ -39,9 +76,9 @@ Item.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
   //Debugging bBox
-  // ctx.beginPath();
-  // ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
-  // ctx.stroke();
+  ctx.beginPath();
+  ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
+  ctx.stroke();
 };
 
 // This fucntion will create the new subclass object and constructor
@@ -138,8 +175,6 @@ createSubClass(Item, Player);
 Player.prototype.update = function(dt) {
 
 };
-
-////////////FIX WITH A CONSOLE.LOG(e) stuff
 
 // Handle the inputs from the players keybo
 Player.prototype.handleInput = function(key) {
@@ -290,7 +325,9 @@ let Rock = function(x, y, sprite) {
   Item.call(this, x, y, sprite);
   this.x = 3 * horisontal;
   this.y = 4 * vertical;
-  this.sprite = 'images/stone-block.png';
+  this.sprite = 'images/Rock.png';
+  this.direction = '';
+  this.move = true;
 };
 
 createSubClass(Item, Rock);
@@ -301,14 +338,31 @@ Rock.prototype.update = function(dt) {
 
 // Change the rock sprite when it is in the water
 Rock.prototype.rockInWater = function() {
-  this.sprite = 'images/stone-block.png';
+  this.sprite = 'images/Rock.png';
 };
+
+Rock.prototype.handleInput = function(key) {
+  if (key === 'left') {
+    this.direction = 'left';
+  }
+  else if (key === 'up') {
+    this.direction = 'up';
+  }
+  else if (key === 'right') {
+    this.direction = 'right';
+  }
+  else if (key === 'down') {
+    this.direction = 'down';
+  }
+};
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 let allKeys = [],
     allDoors = [],
     allPlayers = [],
+    allRocks = [],
     createEnemies = number => {
       let enemies = [];
       for (let i = 0; i < number; i++) {
@@ -319,6 +373,13 @@ let allKeys = [],
         }
       }
       return enemies;
+    },
+    createRocks = number => {
+      let rocks = [];
+      for (let i = 0; i < number; i++) {
+        rocks.push(new Rock(2, 4));
+      }
+      return rocks;
     };
 
 // This function loops the objs array and puts them in thery startPosition
@@ -361,8 +422,9 @@ let createLevelsBlock = () => {
   allKeys.push(new Key());
   allDoors.push(new Door());
   allLives = createLives(lives);
-  startPos(...allKeys, ...allDoors);
   allEnemies = createEnemies(enemiesNumber);
+  allRocks = createRocks(rocksNumber);
+  startPos(...allKeys, ...allDoors);
 };
 
 // Create lives container
@@ -388,5 +450,9 @@ document.addEventListener('keyup', function(e) {
 
   for (pl of allPlayers) {
     pl.handleInput(allowedKeys[e.keyCode]);
+  }
+
+  for (rock of allRocks) {
+    rock.handleInput(allowedKeys[e.keyCode]);
   }
 });

@@ -143,6 +143,30 @@ var Engine = (function(global) {
         }
       }
       // Check rock collision
+      for (rock of allRocks) {
+        for (pl of allPlayers) {
+          if (playerCollide(rock) && rock.move) {
+            switch (true) {
+              case rock.direction === 'up':
+                if (rock.y !== 0)
+                  rock.y -= vertical;
+                break;
+              case rock.direction === 'right':
+                if (rock.x !== 4 * horisontal)
+                  rock.x += horisontal;
+                break;
+              case rock.direction === 'down':
+                if (rock.y !== 5 *  vertical)
+                  rock.y += vertical;
+                break;
+              case rock.direction === 'left':
+                if (rock.x !== 0)
+                  rock.x -= horisontal;
+                break;
+            }
+          }
+        }
+      }
 
       // Check door collision
       for (door of allDoors) {
@@ -179,7 +203,6 @@ var Engine = (function(global) {
         }
       }
 
-      // Check princess collision
     }
 
     /* This function initially draws the "game level", it will then call
@@ -197,44 +220,10 @@ var Engine = (function(global) {
       /* This array holds the relative URL to the image used
        * for that particular row of the game level.
        */
-      var numRows = 6,
+      let numRows = 6,
           numCols = 5,
-          row, col,
-          levels = {
-                   '1' : {
-                          'rowImages' : [
-                                          'images/grass-block.png',   // Top row is water
-                                          'images/stone-block.png',   // Row 1 of 3 of stone
-                                          'images/stone-block.png',   // Row 2 of 3 of stone
-                                          'images/stone-block.png',   // Row 3 of 3 of stone
-                                          'images/grass-block.png',   // Row 1 of 2 of grass
-                                          'images/grass-block.png'    // Row 2 of 2 of grass
-                                        ],
-                          'enemiesNumber' : '3'
-                          },
-                    '2' : {
-                           'rowImages' : [
-                                           'images/water-block.png',   // Top row is water
-                                           'images/stone-block.png',   // Row 1 of 3 of stone
-                                           'images/stone-block.png',   // Row 2 of 3 of stone
-                                           'images/stone-block.png',   // Row 3 of 3 of stone
-                                           'images/grass-block.png',   // Row 1 of 2 of grass
-                                           'images/grass-block.png'    // Row 2 of 2 of grass
-                                         ],
-                            'enemiesNumber' : '4'
-                          },
-                    '3' : {
-                           'rowImages' : [
-                                           'images/water-block.png',   // Top row is water
-                                           'images/stone-block.png',   // Row 1 of 3 of stone
-                                           'images/stone-block.png',   // Row 2 of 3 of stone
-                                           'images/water-block.png',   // Row 3 of 3 of water
-                                           'images/grass-block.png',   // Row 1 of 2 of grass
-                                           'images/grass-block.png'    // Row 2 of 2 of grass
-                                         ],
-                            'enemiesNumber' : '5'
-                          }
-                  };
+          row, col;
+
 
 
 
@@ -291,6 +280,11 @@ var Engine = (function(global) {
              * we're using them over and over.
              */
             ctx.drawImage(Resources.get(levels[levelNumber].rowImages[row]), col * horisontal, row * vertical);
+            /* Check if the block to create is water then we have a true
+            * in the game map else it is a false and we have a block with
+            * no water
+            */
+            (Resources.get(levels[levelNumber].rowImages[row]) === Resources.get('images/water-block.png')) ? gameMap[row][col] = 1 : gameMap[row][col] = 0;
           }
         }
         $("#level").text("Level " + levelNumber);
@@ -324,7 +318,6 @@ var Engine = (function(global) {
           life.render();
         }
 
-
         for (key of allKeys) {
           key.render();
           key.bBox(5, 5, horisontal, vertical);
@@ -333,6 +326,12 @@ var Engine = (function(global) {
         for (door of allDoors) {
           door.render();
           door.bBox(5, 5, horisontal, vertical);
+        }
+      }
+      if (currentLevel >= 2) {
+        for (rock of allRocks) {
+          rock.render();
+          rock.bBox(5, 5, horisontal, vertical);
         }
       }
     }
@@ -367,7 +366,7 @@ var Engine = (function(global) {
 
     function gameWin() {
       // Set the H3 tag with level id to empty
-      $("#level").text("");
+      $("#level").text("WINNER");
       clear();
       console.log("WONDERFULL");
     }
@@ -391,7 +390,8 @@ var Engine = (function(global) {
       'images/key-big.png',
       'images/key-small.png',
       'images/Heart.png',
-      'images/Selector.png'
+      'images/Selector.png',
+      'images/Rock.png'
     ]);
     Resources.onReady(init);
 
