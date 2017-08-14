@@ -166,6 +166,12 @@ var Engine = (function(global) {
             }
           }
         }
+        let row = rock.y/vertical,
+            col = rock.x/horisontal;
+        if (gameMap[row][col] === 'images/water-block.png') {
+          gameMap[row][col] = 'images/stone-block.png';
+          allRocks.splice(rock, 1);
+        }
       }
 
       // Check door collision
@@ -176,8 +182,12 @@ var Engine = (function(global) {
             pl.key = false;
             startPos(...allPlayers, ...allDoors, ...allKeys);
             allEnemies.push(new Enemy());
-            currentLevel++;
-            createMap(currentLevel);
+            if (currentLevel < Object.keys(levels).length) {
+              currentLevel++;
+              createMap(currentLevel);
+            } else {
+              gameWin();
+            }
           }
         }
       }
@@ -270,7 +280,7 @@ var Engine = (function(global) {
         $("#level").text("You loose :(");
       }
       // Create the normal level board
-      else if (levelNumber <= Object.keys(levels).length && levelNumber > 0) {
+      else if (levelNumber > 0) {
         for (row = 0; row < numRows; row++) {
           for (col = 0; col < numCols; col++) {
             /* The drawImage function of the canvas' context element
