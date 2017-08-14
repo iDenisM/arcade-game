@@ -177,6 +177,7 @@ var Engine = (function(global) {
             startPos(...allPlayers, ...allDoors, ...allKeys);
             allEnemies.push(new Enemy());
             currentLevel++;
+            createMap(currentLevel);
           }
         }
       }

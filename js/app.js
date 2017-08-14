@@ -412,9 +412,10 @@ let createEndLevelBlock = () => {
 
 // This function creates the map of the game cell per cell
 let createMap = level => {
+  //levels[levelNumber].rowImages[row]
   for (let row = 0; row < gameMap.length; row++) {
     for (let col = 0; col < gameMap[row].length; col++) {
-      gameMap[row][col] = 'images/grass-block.png';
+      gameMap[row][col] = levels[level].rowImages[row];
     }
   }
 };
