@@ -279,12 +279,7 @@ var Engine = (function(global) {
              * so that we get the benefits of caching these images, since
              * we're using them over and over.
              */
-            ctx.drawImage(Resources.get(levels[levelNumber].rowImages[row]), col * horisontal, row * vertical);
-            /* Check if the block to create is water then we have a true
-            * in the game map else it is a false and we have a block with
-            * no water
-            */
-            (Resources.get(levels[levelNumber].rowImages[row]) === Resources.get('images/water-block.png')) ? gameMap[row][col] = 1 : gameMap[row][col] = 0;
+            ctx.drawImage(Resources.get(gameMap[row][col]), col * horisontal, row * vertical);
           }
         }
         $("#level").text("Level " + levelNumber);

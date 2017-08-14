@@ -129,13 +129,9 @@ Enemy.prototype.update = function(dt) {
     }
 };
 
-
-
 /*
 **PLAYER
 */
-
-// Player class
 let Player = function(x, y, sprite) {
   // Superclass call
   Item.call(this, x, y, sprite);
@@ -414,9 +410,19 @@ let createEndLevelBlock = () => {
   allPlayers.push(new Player(1, 3, 0));
 };
 
+// This function creates the map of the game cell per cell
+let createMap = level => {
+  for (let row = 0; row < gameMap.length; row++) {
+    for (let col = 0; col < gameMap[row].length; col++) {
+      gameMap[row][col] = 'images/grass-block.png';
+    }
+  }
+};
+
 // Create the level block
 let createLevelsBlock = () => {
   currentLevel = 1;
+  createMap(currentLevel);
   allPlayers = [];
   allPlayers.push(new Player(2, 5, playerSprite));
   allKeys.push(new Key());
