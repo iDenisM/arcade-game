@@ -111,7 +111,7 @@ var Engine = (function(global) {
       }
     }
 
-    function playerCollide(objectToCollide) {
+    let playerCollide = (objectToCollide) => {
       for (pl of allPlayers) {
         if (objectToCollide.bBoxX < pl.bBoxX + pl.bBoxWidth &&
             objectToCollide.bBoxX + objectToCollide.bBoxWidth > pl.bBoxX &&
@@ -144,26 +144,35 @@ var Engine = (function(global) {
       }
       // Check rock collision
       for (rock of allRocks) {
-        for (pl of allPlayers) {
-          if (playerCollide(rock) && rock.move) {
-            switch (true) {
-              case rock.direction === 'up':
-                if (rock.y !== 0)
-                  rock.y -= vertical;
-                break;
-              case rock.direction === 'right':
-                if (rock.x !== 4 * horisontal)
-                  rock.x += horisontal;
-                break;
-              case rock.direction === 'down':
-                if (rock.y !== 5 *  vertical)
-                  rock.y += vertical;
-                break;
-              case rock.direction === 'left':
-                if (rock.x !== 0)
-                  rock.x -= horisontal;
-                break;
-            }
+        if (playerCollide(rock)) {
+          rock.move = true;
+          switch (rock.move) {
+            case rock.direction === 'up':
+              if (rock.y !== 0)
+                rock.y -= vertical;
+              rock.move = false;
+            break;
+            case rock.direction === 'right':
+              if (rock.x !== 4 * horisontal)
+                rock.x += horisontal;
+              rock.move = false;
+            break;
+            case rock.direction === 'down':
+              if (rock.y !== 5 *  vertical)
+                rock.y += vertical;
+              rock.move = false;
+            break;
+            case rock.direction === 'left':
+              if (rock.x !== 0)
+                rock.x -= horisontal;
+              rock.move = false;
+          }
+          // Transfomr the rock in a stone block
+          let row = rock.y/vertical,
+              col = rock.x/horisontal;
+          if (gameMap[row][col] === 'images/water-block.png') {
+            gameMap[row][col] = 'images/stone-block.png';
+            allRocks.splice(rock, 1);
           }
         }
       }
@@ -176,7 +185,13 @@ var Engine = (function(global) {
             pl.key = false;
             startPos(...allPlayers, ...allDoors, ...allKeys);
             allEnemies.push(new Enemy());
-            currentLevel++;
+            if (currentLevel < Object.keys(levels).length) {
+              currentLevel++;
+              allRocks = createRocks(rocksNumber++);
+              createMap(currentLevel);
+            } else {
+              gameWin();
+            }
           }
         }
       }
@@ -269,7 +284,7 @@ var Engine = (function(global) {
         $("#level").text("You loose :(");
       }
       // Create the normal level board
-      else if (levelNumber <= Object.keys(levels).length && levelNumber > 0) {
+      else if (levelNumber > 0) {
         for (row = 0; row < numRows; row++) {
           for (col = 0; col < numCols; col++) {
             /* The drawImage function of the canvas' context element
@@ -279,12 +294,7 @@ var Engine = (function(global) {
              * so that we get the benefits of caching these images, since
              * we're using them over and over.
              */
-            ctx.drawImage(Resources.get(levels[levelNumber].rowImages[row]), col * horisontal, row * vertical);
-            /* Check if the block to create is water then we have a true
-            * in the game map else it is a false and we have a block with
-            * no water
-            */
-            (Resources.get(levels[levelNumber].rowImages[row]) === Resources.get('images/water-block.png')) ? gameMap[row][col] = 1 : gameMap[row][col] = 0;
+            ctx.drawImage(Resources.get(gameMap[row][col]), col * horisontal, row * vertical);
           }
         }
         $("#level").text("Level " + levelNumber);

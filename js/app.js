@@ -98,7 +98,7 @@ let Enemy = function(x, y, sprite) {
   // Variables applied to each of our instances go here,
   // we've provided one for you to get started
   this.x = -horisontal;
-  this.y = randomYPosition();
+  this.y = randomPosition(1, 4) * vertical;
   this.sprite = 'images/enemy-bug.png';
   this.speed = randomSpeed();
 };
@@ -112,10 +112,10 @@ let randomSpeed = function() {
 };
 
 // Generate a random value for the speed
-let randomYPosition = function() {
-  let min = 1,
-      max = 4;
-  return (Math.floor(Math.random() * (max - min)) + min) * vertical;
+let randomPosition = (min, max) => {
+  // let min = 1,
+  //     max = 4;
+  return (Math.floor(Math.random() * (max - min)) + min);
 };
 
 // Update the items's position, required method for game
@@ -124,18 +124,14 @@ Enemy.prototype.update = function(dt) {
   this.x += this.speed * dt;
     if(this.x >= 500) {
         this.x = -horisontal;
-        this.y = randomYPosition();
+        this.y = randomPosition(1, 4) * vertical;
         this.speed = randomSpeed();
     }
 };
 
-
-
 /*
 **PLAYER
 */
-
-// Player class
 let Player = function(x, y, sprite) {
   // Superclass call
   Item.call(this, x, y, sprite);
@@ -323,11 +319,11 @@ Life.prototype.update = function(dt) {
 */
 let Rock = function(x, y, sprite) {
   Item.call(this, x, y, sprite);
-  this.x = 3 * horisontal;
+  this.x = x * horisontal;
   this.y = 4 * vertical;
   this.sprite = 'images/Rock.png';
   this.direction = '';
-  this.move = true;
+  this.move = false;
 };
 
 createSubClass(Item, Rock);
@@ -342,18 +338,20 @@ Rock.prototype.rockInWater = function() {
 };
 
 Rock.prototype.handleInput = function(key) {
-  if (key === 'left') {
-    this.direction = 'left';
-  }
-  else if (key === 'up') {
-    this.direction = 'up';
-  }
-  else if (key === 'right') {
-    this.direction = 'right';
-  }
-  else if (key === 'down') {
-    this.direction = 'down';
-  }
+  // if (this.move) {
+    if (key === 'left') {
+      this.direction = 'left';
+    }
+    else if (key === 'up') {
+      this.direction = 'up';
+    }
+    else if (key === 'right') {
+      this.direction = 'right';
+    }
+    else if (key === 'down') {
+      this.direction = 'down';
+    }
+  // }
 };
 
 // Now instantiate your objects.
@@ -377,7 +375,7 @@ let allKeys = [],
     createRocks = number => {
       let rocks = [];
       for (let i = 0; i < number; i++) {
-        rocks.push(new Rock(2, 4));
+        rocks.push(new Rock(randomPosition(0, 5)));
       }
       return rocks;
     };
@@ -396,6 +394,7 @@ let emptyAllContainers = () => {
   allLives = [];
   allKeys = [];
   allDoors = [];
+  allRocks = [];
 };
 
 // Create the pre level block
@@ -414,9 +413,20 @@ let createEndLevelBlock = () => {
   allPlayers.push(new Player(1, 3, 0));
 };
 
+// This function creates the map of the game cell per cell
+let createMap = level => {
+  //levels[levelNumber].rowImages[row]
+  for (let row = 0; row < gameMap.length; row++) {
+    for (let col = 0; col < gameMap[row].length; col++) {
+      gameMap[row][col] = levels[level].rowImages[row];
+    }
+  }
+};
+
 // Create the level block
 let createLevelsBlock = () => {
   currentLevel = 1;
+  createMap(currentLevel);
   allPlayers = [];
   allPlayers.push(new Player(2, 5, playerSprite));
   allKeys.push(new Key());
