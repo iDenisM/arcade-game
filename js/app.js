@@ -199,14 +199,16 @@ Player.prototype.handleInput = function(key) {
             this.x -= horisontal;
           }
       }
-    } else if (key === 'up' && this.y !== 0 && currentLevel >= 1) {
+    }
+    else if (key === 'up' && this.y !== 0 && currentLevel >= 1) {
       switch (true) {
         case (currentLevel >= 1):
           if (this.y !== 0) {
             this.y -= vertical;
           }
       }
-    } else if (key === 'right') {
+    }
+    else if (key === 'right') {
       switch (true) {
         case (currentLevel === 0):
           if (this.x !== 4 * horisontal) {
@@ -229,14 +231,16 @@ Player.prototype.handleInput = function(key) {
             this.x += horisontal;
           }
       }
-    } else if (key === 'down' && this.y !== vertical * 5 && currentLevel >= 1) {
+    }
+    else if (key === 'down' && this.y !== vertical * 5 && currentLevel >= 1) {
       switch (true) {
         case (currentLevel >= 1):
           if (this.y !== 5 * vertical) {
             this.y += vertical;
           }
       }
-    } else if (key === 'enter') {
+    }
+    else if (key === 'enter') {
       if (currentLevel === 0) {
         createLevelsBlock();
       }
@@ -323,7 +327,6 @@ let Rock = function(x, y, sprite) {
   this.y = 4 * vertical;
   this.sprite = 'images/Rock.png';
   this.direction = '';
-  this.move = false;
 };
 
 createSubClass(Item, Rock);
@@ -337,21 +340,34 @@ Rock.prototype.rockInWater = function() {
   this.sprite = 'images/Rock.png';
 };
 
+Rock.prototype.move = function(direction) {
+  if (direction === "right") {
+    this.x += horisontal;
+  }
+  else if (direction === "down") {
+    this.y += vertical;
+  }
+  else if (direction === "left") {
+    this.x -= horisontal;
+  }
+  else if (direction === "up") {
+    this.y -= vertical;
+  }
+};
+
 Rock.prototype.handleInput = function(key) {
-  // if (this.move) {
-    if (key === 'left') {
-      this.direction = 'left';
-    }
-    else if (key === 'up') {
-      this.direction = 'up';
-    }
-    else if (key === 'right') {
-      this.direction = 'right';
-    }
-    else if (key === 'down') {
-      this.direction = 'down';
-    }
-  // }
+  if (key === 'left') {
+    this.direction = 'left';
+  }
+  else if (key === 'up') {
+    this.direction = 'up';
+  }
+  else if (key === 'right') {
+    this.direction = 'right';
+  }
+  else if (key === 'down') {
+    this.direction = 'down';
+  }
 };
 
 // Now instantiate your objects.

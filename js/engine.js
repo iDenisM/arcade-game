@@ -142,34 +142,21 @@ var Engine = (function(global) {
           }
         }
       }
+
       // Check rock collision
-      for (rock of allRocks) {
-        if (playerCollide(rock)) {
-          rock.move = true;
-          switch (rock.move) {
-            case rock.direction === 'up':
-              if (rock.y !== 0)
-                rock.y -= vertical;
-              rock.move = false;
-            break;
-            case rock.direction === 'right':
-              if (rock.x !== 4 * horisontal)
-                rock.x += horisontal;
-              rock.move = false;
-            break;
-            case rock.direction === 'down':
-              if (rock.y !== 5 *  vertical)
-                rock.y += vertical;
-              rock.move = false;
-            break;
-            case rock.direction === 'left':
-              if (rock.x !== 0)
-                rock.x -= horisontal;
-              rock.move = false;
-          }
-          // Transfomr the rock in a stone block
-          let row = rock.y/vertical,
-              col = rock.x/horisontal;
+      for (let rock of allRocks.keys()) {
+        if (playerCollide(allRocks[rock])) {
+          // Use this variables in case the rock has to be moved
+          // to the original position
+          let tempX = allRocks[rock].x,
+              tempY = allRocks[rock].y;
+          // Move the rock to the indicated direction
+          allRocks[rock].move(allRocks[rock].direction);
+          // Check if rock moved to a rock or wall
+
+          // Transfomr the rock in a stone block if it falls in the water
+          let row = allRocks[rock].y/vertical,
+              col = allRocks[rock].x/horisontal;
           if (gameMap[row][col] === 'images/water-block.png') {
             gameMap[row][col] = 'images/stone-block.png';
             allRocks.splice(rock, 1);
