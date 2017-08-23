@@ -335,26 +335,38 @@ Rock.prototype.update = function(dt) {
 
 };
 
-// Change the rock sprite when it is in the water
-Rock.prototype.rockInWater = function() {
-  this.sprite = 'images/Rock.png';
-};
-
+// Move the rock
 Rock.prototype.move = function(direction) {
   if (direction === "right") {
-    this.x += horisontal;
+    this.x != 4 * horisontal ? this.x += horisontal : this.x;
   }
   else if (direction === "down") {
-    this.y += vertical;
+    this.y != 5 * vertical ? this.y += vertical : this.y;
   }
   else if (direction === "left") {
-    this.x -= horisontal;
+    this.x != 0 ? this.x -= horisontal : this.x;
   }
   else if (direction === "up") {
-    this.y -= vertical;
+    this.y != 0 ? this.y -= vertical : this.y;
   }
 };
 
+Rock.prototype.invertMove = function(direction) {
+  if (this.direction === "right") {
+    this.direction = "left";
+  }
+  else if (this.direction === "down") {
+    this.direction = "up";
+  }
+  else if (this.direction === "left") {
+    this.direction = "right";
+  }
+  else if (this.direction === "up") {
+    this.direction = "down";
+  }
+}
+
+// Get the direction to move the rock
 Rock.prototype.handleInput = function(key) {
   if (key === 'left') {
     this.direction = 'left';

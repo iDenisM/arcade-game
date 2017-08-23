@@ -146,13 +146,21 @@ var Engine = (function(global) {
       // Check rock collision
       for (let rock of allRocks.keys()) {
         if (playerCollide(allRocks[rock])) {
-          // Use this variables in case the rock has to be moved
-          // to the original position
-          let tempX = allRocks[rock].x,
-              tempY = allRocks[rock].y;
+          // Check if the rock moved towards wall
+          if (allRocks[rock].x === 0 || allRocks[rock].x === 4 * horisontal || allRocks[rock].y === 0 || allRocks[rock].y === 5 * vertical) {
+            for (pl of allPlayers) {
+              if (pl.x === allRocks[rock].x && pl.y === allRocks[rock].y) {
+                // Invert direction
+                allRocks[rock].invertMove(allRocks[rock].direction);
+              }
+            }
+          }
+          // Check if the rock moved to another rock position
+          // if () {
+          //
+          // }
           // Move the rock to the indicated direction
           allRocks[rock].move(allRocks[rock].direction);
-          // Check if rock moved to a rock or wall
 
           // Transfomr the rock in a stone block if it falls in the water
           let row = allRocks[rock].y/vertical,
@@ -205,6 +213,8 @@ var Engine = (function(global) {
         }
       }
 
+      // Check Water collision
+      
     }
 
     /* This function initially draws the "game level", it will then call
