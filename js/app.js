@@ -76,9 +76,9 @@ Item.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
   //Debugging bBox
-  ctx.beginPath();
-  ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
-  ctx.stroke();
+  // ctx.beginPath();
+  // ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
+  // ctx.stroke();
 };
 
 // This fucntion will create the new subclass object and constructor
@@ -404,6 +404,9 @@ let allKeys = [],
       let rocks = [];
       for (let i = 0; i < number; i++) {
         rocks.push(new Rock(randomPosition(0, 5)));
+        // Check if the last created enemy isn't on the same lane
+        while (i > 0 && rocks[i - 1].x === enemies[i].x) {
+          rocks[i] = new Rock(randomPosition(0, 5);
       }
       return rocks;
     };
@@ -474,6 +477,34 @@ let createLives = l => {
   }
   return livesHolder;
 };
+
+let resetPosAfterCollision = () => {
+  startPos(...allPlayers, ...allDoors, ...allKeys);
+  for (pl of allPlayers) {
+    pl.key = false;
+  }
+};
+
+// Check if an object collide another object
+let objectCollideObject = (objectCollider, objectToCollide) => {
+  if (objectToCollide.bBoxX < objectCollider.bBoxX + objectCollider.bBoxWidth &&
+      objectToCollide.bBoxX + objectToCollide.bBoxWidth > objectCollider.bBoxX &&
+      objectToCollide.bBoxY < objectCollider.bBoxY + objectCollider.bBoxHeight &&
+      objectToCollide.bBoxY + objectToCollide.bBoxHeight > objectCollider.bBoxY)
+    return true;
+  else
+    return false;
+}
+
+// Check if an array of objects collide another object
+let objectsCollideObject = (objectCollider, objectToCollide) => {
+  for (obj of objectCollider) {
+    if (objectCollideObject(obj, objectToCollide))
+      return true;
+    else
+      return false;
+  }
+}
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

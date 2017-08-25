@@ -111,23 +111,11 @@ var Engine = (function(global) {
       }
     }
 
-    let playerCollide = (objectToCollide) => {
-      for (pl of allPlayers) {
-        if (objectToCollide.bBoxX < pl.bBoxX + pl.bBoxWidth &&
-            objectToCollide.bBoxX + objectToCollide.bBoxWidth > pl.bBoxX &&
-            objectToCollide.bBoxY < pl.bBoxY + pl.bBoxHeight &&
-            objectToCollide.bBoxY + objectToCollide.bBoxHeight > pl.bBoxY) {
-          return true;
-        }
-      }
-      return false;
-    }
-
     // Check if an Item in the game made a collision with teh player
     function checkCollisions() {
       // Check key collision
       for (key of allKeys) {
-        if (playerCollide(key)) {
+        if (objectsCollideObject(allPlayers, key)) {
           // Add points on key collision
           if (!allPlayers[0].key)
             playerScore += 50;
@@ -145,7 +133,7 @@ var Engine = (function(global) {
 
       // Check rock collision
       for (let rock of allRocks.keys()) {
-        if (playerCollide(allRocks[rock])) {
+        if (objectsCollideObject(allPlayers, allRocks[rock])) {
           // Check if the rock moved towards wall
           if (allRocks[rock].x === 0 || allRocks[rock].x === 4 * horisontal || allRocks[rock].y === 0 || allRocks[rock].y === 5 * vertical) {
             for (pl of allPlayers) {
@@ -155,13 +143,20 @@ var Engine = (function(global) {
               }
             }
           }
-          // Check if the rock moved to another rock position
-          // if () {
-          //
-          // }
+          // Check if the rock has another rock in the near position
+          for (let collideRock of allRocks.keys()) {
+            if (((allRocks[rock].x - horisontal === allRocks[collideRock].x ||
+                 allRocks[rock].x + horisontal === allRocks[collideRock].x) &&
+                 allRocks[rock].y === allRocks[collideRock].y) ||
+                ((allRocks[rock].y - vertical === allRocks[collideRock].y ||
+                 allRocks[rock].y + vertical === allRocks[collideRock].y) &&
+                 allRocks[rock].x === allRocks[collideRock].x)) {
+              // Invert direction
+              allRocks[rock].invertMove(allRocks[rock].direction);
+            }
+          }
           // Move the rock to the indicated direction
           allRocks[rock].move(allRocks[rock].direction);
-
           // Transfomr the rock in a stone block if it falls in the water
           let row = allRocks[rock].y/vertical,
               col = allRocks[rock].x/horisontal;
@@ -175,7 +170,7 @@ var Engine = (function(global) {
       // Check door collision
       for (door of allDoors) {
         for (pl of allPlayers) {
-          if (playerCollide(door) && pl.key && currentLevel > 0) {
+          if (objectsCollideObject(allPlayers, door) && pl.key && currentLevel > 0) {
             playerScore += 150;
             pl.key = false;
             startPos(...allPlayers, ...allDoors, ...allKeys);
@@ -193,28 +188,31 @@ var Engine = (function(global) {
 
       // Check Enemy collision
       for (enem of allEnemies) {
-        if (playerCollide(enem)) {
-          // check if any lives left
+        if (objectsCollideObject(allPlayers, enem)) {
+          // Check if any lives left
           if (allLives.length <= 1 && currentLevel > 0) {
             createEndLevelBlock();
           }
+          // Reset and remove life
           else {
             playerScore -= 50;
             playerScore < 0 ? playerScore = 0 : playerScore = playerScore;
             allLives.pop();
             // reset player door and key position
-            for (pl of allPlayers) {
-              pl.startPosition();
-              pl.key = false;
-            }
-            door.startPosition();
-            key.startPosition();
+            resetPosAfterCollision();
           }
         }
       }
 
       // Check Water collision
-      
+      for (pl of allPlayers) {
+        let row = pl.y/vertical,
+            col = pl.x/horisontal;
+        if (gameMap[row][col] === 'images/water-block.png') {
+          // reset player door and key position
+          resetPosAfterCollision();
+        }
+      }
     }
 
     /* This function initially draws the "game level", it will then call
