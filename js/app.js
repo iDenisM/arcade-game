@@ -405,8 +405,9 @@ let allKeys = [],
       for (let i = 0; i < number; i++) {
         rocks.push(new Rock(randomPosition(0, 5)));
         // Check if the last created enemy isn't on the same lane
-        while (i > 0 && rocks[i - 1].x === enemies[i].x) {
-          rocks[i] = new Rock(randomPosition(0, 5);
+        while (i > 0 && rocks[i - 1].x === rocks[i].x) {
+          rocks[i] = new Rock(randomPosition(0, 5));
+        }
       }
       return rocks;
     };
@@ -457,6 +458,7 @@ let createMap = level => {
 // Create the level block
 let createLevelsBlock = () => {
   currentLevel = 1;
+  rocksNumber = 1;
   createMap(currentLevel);
   allPlayers = [];
   allPlayers.push(new Player(2, 5, playerSprite));

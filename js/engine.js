@@ -353,11 +353,7 @@ var Engine = (function(global) {
     }
 
     function clear() {
-      allEnemies = [];
-      allPlayers = [];
-      allLives = [];
-      allKeys = [];
-      allDoors = [];
+      emptyAllContainers();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
     }
