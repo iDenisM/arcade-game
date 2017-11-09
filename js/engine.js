@@ -157,7 +157,7 @@ var Engine = (function(global) {
           }
           // Move the rock to the indicated direction
           allRocks[rock].move(allRocks[rock].direction);
-          // Transfomr the rock in a stone block if it falls in the water
+          // Transform the rock in a stone block if it falls in the water
           let row = allRocks[rock].y/vertical,
               col = allRocks[rock].x/horisontal;
           if (gameMap[row][col] === 'images/water-block.png') {
