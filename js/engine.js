@@ -9,9 +9,8 @@
  * drawn but that is not the case. What's really happening is the entire "scene"
  * is being drawn over and over, presenting the illusion of animation.
  *
- * This engine is available globally via the Engine variable and it also makes
- * the canvas' context (ctx) object globally available to make writing app.js
- * a little simpler to work with.
+ * This engine makes the canvas' context (ctx) object globally available to make 
+ * writing app.js a little simpler to work with.
  */
 
 var Engine = (function(global) {
@@ -28,8 +27,6 @@ var Engine = (function(global) {
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
-
-
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -59,8 +56,6 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         win.requestAnimationFrame(main);
-
-
     }
 
     /* This function does some initial setup that should only occur once,
@@ -68,10 +63,9 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-      createPreLevelsBlock();
-      reset();
-      lastTime = Date.now();
-      main();
+        reset();
+        lastTime = Date.now();
+        main();
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -84,12 +78,8 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-      updateEntities(dt);
-      checkCollisions();
-    }
-
-    function checkLevelStatus() {
-
+        updateEntities(dt);
+        // checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -100,119 +90,10 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-      for (enem of allEnemies) {
-        enem.update(dt);
-      }
-      for (life of allLives) {
-        life.update(dt);
-      }
-      for (pl of allPlayers) {
-        pl.update(dt);
-      }
-    }
-
-    // Check if an Item in the game made a collision with teh player
-    function checkCollisions() {
-      // Check key collision
-      for (key of allKeys) {
-        if (objectsCollideObject(allPlayers, key)) {
-          // Add points on key collision
-          if (!allPlayers[0].key)
-            playerScore += 50;
-          // Open the door
-          for (door of allDoors) {
-            door.openDoor();
-          }
-          // Change player status on key collision
-          for (pl of allPlayers) {
-            pl.key = true;
-            key.bindKey(pl);
-          }
-        }
-      }
-
-      // Check rock collision
-      for (let rock of allRocks.keys()) {
-        if (objectsCollideObject(allPlayers, allRocks[rock])) {
-          // Check if the rock moved towards wall
-          if (allRocks[rock].x === 0 || allRocks[rock].x === 4 * horisontal || allRocks[rock].y === 0 || allRocks[rock].y === 5 * vertical) {
-            for (pl of allPlayers) {
-              if (pl.x === allRocks[rock].x && pl.y === allRocks[rock].y) {
-                // Invert direction
-                allRocks[rock].invertMove(allRocks[rock].direction);
-              }
-            }
-          }
-          // Check if the rock has another rock in the near position
-          for (let collideRock of allRocks.keys()) {
-            if (((allRocks[rock].x - horisontal === allRocks[collideRock].x ||
-                 allRocks[rock].x + horisontal === allRocks[collideRock].x) &&
-                 allRocks[rock].y === allRocks[collideRock].y) ||
-                ((allRocks[rock].y - vertical === allRocks[collideRock].y ||
-                 allRocks[rock].y + vertical === allRocks[collideRock].y) &&
-                 allRocks[rock].x === allRocks[collideRock].x)) {
-              // Invert direction
-              allRocks[rock].invertMove(allRocks[rock].direction);
-            }
-          }
-          // Move the rock to the indicated direction
-          allRocks[rock].move(allRocks[rock].direction);
-          // Transform the rock in a stone block if it falls in the water
-          let row = allRocks[rock].y/vertical,
-              col = allRocks[rock].x/horisontal;
-          if (gameMap[row][col] === 'images/water-block.png') {
-            gameMap[row][col] = 'images/stone-block.png';
-            allRocks.splice(rock, 1);
-          }
-        }
-      }
-
-      // Check door collision
-      for (door of allDoors) {
-        for (pl of allPlayers) {
-          if (objectsCollideObject(allPlayers, door) && pl.key && currentLevel > 0) {
-            playerScore += 150;
-            pl.key = false;
-            startPos(...allPlayers, ...allDoors, ...allKeys);
-            allEnemies.push(new Enemy());
-            if (currentLevel < Object.keys(levels).length) {
-              currentLevel++;
-              allRocks = createRocks(rocksNumber++);
-              createMap(currentLevel);
-            } else {
-              gameWin();
-            }
-          }
-        }
-      }
-
-      // Check Enemy collision
-      for (enem of allEnemies) {
-        if (objectsCollideObject(allPlayers, enem)) {
-          // Check if any lives left
-          if (allLives.length <= 1 && currentLevel > 0) {
-            createEndLevelBlock();
-          }
-          // Reset and remove life
-          else {
-            playerScore -= 50;
-            playerScore < 0 ? playerScore = 0 : playerScore = playerScore;
-            allLives.pop();
-            // reset player door and key position
-            resetPosAfterCollision();
-          }
-        }
-      }
-
-      // Check Water collision
-      for (pl of allPlayers) {
-        let row = pl.y/vertical,
-            col = pl.x/horisontal;
-        if (gameMap[row][col] === 'images/water-block.png') {
-          // reset player door and key position
-          resetPosAfterCollision();
-        }
-      }
+        allEnemies.forEach(function(enemy) {
+            enemy.update(dt);
+        });
+        player.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -222,83 +103,42 @@ var Engine = (function(global) {
      * they are just drawing the entire screen over and over.
      */
     function render() {
-      renderLevels(currentLevel);
-      renderEntities();
-    }
+        /* This array holds the relative URL to the image used
+         * for that particular row of the game level.
+         */
+        var rowImages = [
+                'images/water-block.png',   // Top row is water
+                'images/stone-block.png',   // Row 1 of 3 of stone
+                'images/stone-block.png',   // Row 2 of 3 of stone
+                'images/stone-block.png',   // Row 3 of 3 of stone
+                'images/grass-block.png',   // Row 1 of 2 of grass
+                'images/grass-block.png'    // Row 2 of 2 of grass
+            ],
+            numRows = 6,
+            numCols = 5,
+            row, col;
+        
+        // Before drawing, clear existing canvas
+        ctx.clearRect(0,0,canvas.width,canvas.height)
 
-    function renderLevels(levelNumber) {
-      /* This array holds the relative URL to the image used
-       * for that particular row of the game level.
-       */
-      let numRows = 6,
-          numCols = 5,
-          row, col;
-
-
-
-
-      /* Loop through the number of rows and columns we've defined above
-       * and, using the rowImages array, draw the correct image for that
-       * portion of the "grid"
-       */
-      // Create start level to choose a player character
-      if (levelNumber === 0) {
+        /* Loop through the number of rows and columns we've defined above
+         * and, using the rowImages array, draw the correct image for that
+         * portion of the "grid"
+         */
         for (row = 0; row < numRows; row++) {
-          for (col = 0; col < numCols; col++) {
-            ctx.drawImage(Resources.get('images/grass-block.png'), col * horisontal, row * vertical);
-          }
+            for (col = 0; col < numCols; col++) {
+                /* The drawImage function of the canvas' context element
+                 * requires 3 parameters: the image to draw, the x coordinate
+                 * to start drawing and the y coordinate to start drawing.
+                 * We're using our Resources helpers to refer to our images
+                 * so that we get the benefits of caching these images, since
+                 * we're using them over and over.
+                 */
+                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+            }
         }
-        // Draw the characters to choose
-        ctx.drawImage(Resources.get('images/char-boy.png'), 0, 3 * vertical);
-        ctx.drawImage(Resources.get('images/char-cat-girl.png'), 1 * horisontal, 3 * vertical);
-        ctx.drawImage(Resources.get('images/char-horn-girl.png'), 2 * horisontal, 3 * vertical);
-        ctx.drawImage(Resources.get('images/char-pink-girl.png'), 3 * horisontal, 3 * vertical);
-        ctx.drawImage(Resources.get('images/char-princess-girl.png'), 4 * horisontal, 3 * vertical);
-        // Draw the text
-        ctx.font = '50px Arial';
-        ctx.fillText('CHOOSE YOUR', 60, 120);
-        ctx.fillText('CHARACTER', 100, 200);
-        $("#level").text("You can choose you character");
-      }
-      // Create the game loose board
-      else if (levelNumber === -1) {
-        // Draw the board
-        for (row = 0; row < numRows; row++) {
-          for (col = 0; col < numCols; col++) {
-            ctx.drawImage(Resources.get('images/grass-block.png'), col * horisontal, row * vertical);
-          }
-        }
-        // Draw the text on the board
-        ctx.font = '50px Arial';
-        ctx.fillText('TAKE ANOTHER', 70, 170);
-        ctx.fillText('CHANCE', 150, 238);
-        ctx.font = '100px Arial';
-        ctx.fillText('N', 117, 378);
-        ctx.fillText('Y', 317, 378);
-        // Description text
-        $("#level").text("You loose :(");
-      }
-      // Create the normal level board
-      else if (levelNumber > 0) {
-        for (row = 0; row < numRows; row++) {
-          for (col = 0; col < numCols; col++) {
-            /* The drawImage function of the canvas' context element
-             * requires 3 parameters: the image to draw, the x coordinate
-             * to start drawing and the y coordinate to start drawing.
-             * We're using our Resources helpers to refer to our images
-             * so that we get the benefits of caching these images, since
-             * we're using them over and over.
-             */
-            ctx.drawImage(Resources.get(gameMap[row][col]), col * horisontal, row * vertical);
-          }
-        }
-        $("#level").text("Level " + levelNumber);
-        $("#score").text("Score " + playerScore);
-      } else {
-        gameWin();
-      }
 
-
+        renderEntities();
     }
 
     /* This function is called by the render function and is called on each game
@@ -306,39 +146,14 @@ var Engine = (function(global) {
      * on your enemy and player entities within app.js
      */
     function renderEntities() {
-      /* Loop through all of the objects within the allEnemies array and call
-       * the render function you have defined.
-       */
-      for (pl of allPlayers) {
-       pl.render();
-       pl.bBox(15, 5, horisontal, vertical);
-      }
-      if (currentLevel >= 1) {
-        for (enem of allEnemies) {
-          enem.render();
-          enem.bBox(5, 5, horisontal, vertical);
-        }
+        /* Loop through all of the objects within the allEnemies array and call
+         * the render function you have defined.
+         */
+        allEnemies.forEach(function(enemy) {
+            enemy.render();
+        });
 
-        for (life of allLives) {
-          life.render();
-        }
-
-        for (key of allKeys) {
-          key.render();
-          key.bBox(5, 5, horisontal, vertical);
-        }
-
-        for (door of allDoors) {
-          door.render();
-          door.bBox(5, 5, horisontal, vertical);
-        }
-      }
-      if (currentLevel >= 2) {
-        for (rock of allRocks) {
-          rock.render();
-          rock.bBox(5, 5, horisontal, vertical);
-        }
-      }
+        player.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -346,30 +161,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-    }
-
-    function resetLevel() {
-
-    }
-
-    function clear() {
-      emptyAllContainers();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.beginPath();
-    }
-
-    function gameLoose() {
-      $("#level").text("");
-      clear();
-      console.log("GAME OVER");
-    }
-
-
-    function gameWin() {
-      // Set the H3 tag with level id to empty
-      $("#level").text("WINNER");
-      clear();
-      console.log("WONDERFULL");
+        // noop
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -377,22 +169,11 @@ var Engine = (function(global) {
      * all of these images are properly loaded our game will start.
      */
     Resources.load([
-      'images/stone-block.png',
-      'images/water-block.png',
-      'images/grass-block.png',
-      'images/enemy-bug.png',
-      'images/char-boy.png',
-      'images/char-cat-girl.png',
-      'images/char-horn-girl.png',
-      'images/char-pink-girl.png',
-      'images/char-princess-girl.png',
-      'images/closed-door.png',
-      'images/open-door.png',
-      'images/key-big.png',
-      'images/key-small.png',
-      'images/Heart.png',
-      'images/Selector.png',
-      'images/Rock.png'
+        'images/stone-block.png',
+        'images/water-block.png',
+        'images/grass-block.png',
+        'images/enemy-bug.png',
+        'images/char-boy.png'
     ]);
     Resources.onReady(init);
 
