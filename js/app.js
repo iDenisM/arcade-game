@@ -61,8 +61,19 @@ class Player extends GameObject {
   }
 
   // Handle the control of the movement of the player
-  handleInput() {
-
+  handleInput(e) {
+    if (e === 'left') {
+      this.x -= horisontal;
+    }
+    else if (e === 'right') {
+      this.x += horisontal;
+    }
+    else if (e === 'up') {
+      this.y -= vertical;
+    }
+    else if (e === 'down') {
+      this.y += vertical;
+    }
   }
 };
 
@@ -77,7 +88,7 @@ for (let i = 0; i < startEmeniesCount; i++) {
   allEnemies.push(enemy);
 };
 // Place the player object in a variable called player
-let player = new Player();
+const player = new Player();
 player.setStartPosition(2 * horisontal, 3 * vertical);
 
 
