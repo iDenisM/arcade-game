@@ -9,7 +9,6 @@ class GameObject {
     this.sprite = sprite;
   }
 
-
   // Set the start position of the game object on the canvas
   setStartPosition(x, y) {
     this.x = x;
@@ -62,7 +61,7 @@ class Enemy extends GameObject {
   }
 
   update(dt) {
-    if (this.x <= 505) {
+    if (this.x <= mapCols * horisontal) {
       this.x += this.speed * dt;
     }
     else {
@@ -77,21 +76,26 @@ class Player extends GameObject {
   constructor(sprite, id) {
     sprite = 'images/char-boy.png';
     super(sprite, id);
+    this.speed = 10;
   }
 
   // Handle the control of the movement of the player
   handleInput(e) {
     if (e === 'left') {
-      this.x -= horisontal;
+      if (this.x > 0)
+        this.x -= horisontal;
     }
     else if (e === 'right') {
-      this.x += horisontal;
+      if (this.x < (mapCols - 1) * horisontal)
+        this.x += horisontal;
     }
     else if (e === 'up') {
-      this.y -= vertical;
+      if (this.y > 0)
+        this.y -= vertical;
     }
     else if (e === 'down') {
-      this.y += vertical;
+      if (this.y < (mapRows - 1) * vertical)
+        this.y += vertical;
     }
   }
 };
@@ -134,7 +138,7 @@ let objectCollideArray = (objectThatCollide, arrayToCollide) => {
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
-document.addEventListener('keyup', function(e) {
+document.addEventListener('keydown', function(e) {
     var allowedKeys = {
         37: 'left',
         38: 'up',
