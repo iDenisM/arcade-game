@@ -1,6 +1,9 @@
 const horisontal = 101,
       vertical = 83,
       startEmeniesCount = 3;
+let player,
+    allEnemies = [],
+    allGameObjects = [];
 
 // Create super class for all game objects
 class GameObject {
@@ -100,21 +103,17 @@ class Player extends GameObject {
   }
 };
 
-
 // Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-let allEnemies = [];
 // Create three enemies for the begining
 for (let i = 0; i < startEmeniesCount; i++) {
   let enemy = new Enemy();
-
   enemy.id = i;
   allEnemies.push(enemy);
 };
-// Place the player object in a variable called player
-const player = new Player();
-player.id = 'player';
 
+// Place the player object in a variable called player
+player = new Player();
+player.id = 'player';
 
 // Check if an object collide another object
 let objectCollideObject = (objectThatCollide, objectToCollide) => {

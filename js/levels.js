@@ -6,29 +6,14 @@ const getMapSprite = {
 
 const levels = [
   {
-    'id': 0,
-    'map':
-    [
-      [1,1,1,1,1],
-      [2,2,2,2,2],
-      [1,1,1,1,1],
-      [1,1,1,1,1],
-      [3,3,3,3,3],
-      [3,3,3,3,3]
+    'id': 1,
+    'columns': 5,
+    'rows': [1,2,1,1,3,3],  // This is the base of the map
+    'blocks':
+    [             // This array will change the base map
+      [0,2,3],  // First number is the row, second is the column and third is the sprite id
+      [2,3,1]
     ],
     'enemies': 3
-  },
-  {
-    'id': 1,
-    'map':
-    [
-      [1,1,1,1,1],
-      [2,2,2,2,2],
-      [2,2,2,2,2],
-      [2,2,2,2,2],
-      [3,3,3,3,3],
-      [3,3,3,3,3]
-    ],
-    'enemies': 4
   }
 ];

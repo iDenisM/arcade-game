@@ -1,3 +1,35 @@
 body {
-    text-align: center;
+
+}
+
+#container {
+  display: block;
+  width: 505px;
+  position: relative;
+  margin: 0 auto;
+}
+
+#board {
+  position: absolute;
+}
+
+#main-menu {
+  width: 100%;
+  position: absolute;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.button {
+  position: absolute;
+  width: 40%;
+  margin: 0 30%;
+}
+
+#b1 {
+  top: 50px;
+}
+
+#b2 {
+  top: 75px;
 }
