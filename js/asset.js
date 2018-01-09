@@ -31,14 +31,12 @@ let level = new Level();
 level.id = 1;
 let drawMapWithId = (id) => {
   level.id = id;
-  level.numRows = levels[id].map.length;
-  level.numCols = levels[id].map[0].length;
-  for (let r = 0; r < level.numRows; r++) {
-    level.rowImages[r] = [];
-    for (let c = 0; c < level.numCols; c++) {
-      level.rowImages[r][c] = levels[id].map[r][c];
+  level.numRows = levels[id].rows.length;
+  level.numCols = levels[id].columns;
+  for (let row = 0; row < level.numRows; row++) {
+    level.rowImages[row] = [];
+    for (let col = 0; col < level.numCols; col++) {
+      level.rowImages[row][col] = levels[id].rows[row];
     }
   }
-
-
 };

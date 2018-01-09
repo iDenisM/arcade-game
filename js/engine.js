@@ -94,12 +94,11 @@ var Engine = (function(global) {
     let top = 50;
     for (let item in levels) {
       let btValue = `Level ${parseInt(item) + 1}`;
-      let btId = `l${parseInt(item) + 1}`;
       let button = $('<input/>').attr({
         type: 'button',
         value: btValue,
         class: 'button button-level',
-        id: btId
+        id: `${parseInt(item)}`
       }).css({
         top: `${top + (top * parseInt(item)) / 2}px`
       });
@@ -117,11 +116,11 @@ var Engine = (function(global) {
     $('#main-menu').append(backButton);
 
     $('.button-level').click(function() {
-      alert(this.id);
-      // drawMapWithId(this.id);
-      // reset();
-      // lastTime = Date.now();
-      // main();
+      // alert(this.id);
+      drawMapWithId(this.id);
+      reset();
+      lastTime = Date.now();
+      main();
     });
 
     $('#buttonBack').click(function() {
