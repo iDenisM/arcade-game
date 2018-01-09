@@ -12,7 +12,7 @@ const levels = [
     'blocks':
     [             // This array will change the base map
       [0,2,3],  // First number is the row, second is the column and third is the sprite id
-      [2,3,1]
+      [2,3,3]
     ],
     'enemies': 3
   },

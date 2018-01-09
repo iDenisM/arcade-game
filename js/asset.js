@@ -39,4 +39,12 @@ let drawMapWithId = (id) => {
       level.rowImages[row][col] = levels[id].rows[row];
     }
   }
+  if (levels[id].blocks) {
+    for (let block = 0; block < levels[id].blocks.length; block++) {
+      let row = levels[id].blocks[block][0],
+          col = levels[id].blocks[block][1],
+          sprite = levels[id].blocks[block][2];
+      level.rowImages[row][col] = sprite;
+    }
+  }
 };
