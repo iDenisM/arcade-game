@@ -103,17 +103,6 @@ class Player extends GameObject {
   }
 };
 
-// Now instantiate your objects.
-// Create three enemies for the begining
-for (let i = 0; i < startEmeniesCount; i++) {
-  let enemy = new Enemy();
-  enemy.id = i;
-  allEnemies.push(enemy);
-};
-
-// Place the player object in a variable called player
-player = new Player();
-player.id = 'player';
 
 // Check if an object collide another object
 let objectCollideObject = (objectThatCollide, objectToCollide) => {
@@ -148,3 +137,17 @@ document.addEventListener('keydown', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+// Now instantiate your objects.
+// Create three enemies for the begining
+for (let i = 0; i < startEmeniesCount; i++) {
+  let enemy = new Enemy();
+  enemy.id = i;
+  allEnemies.push(enemy);
+};
+
+// Place the player object in a variable called player
+player = new Player();
+player.id = 'player';
+
+// allGameObjects.push(allEnemies).push(player);

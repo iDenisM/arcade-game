@@ -29,7 +29,7 @@ class Level {
 
 let level = new Level();
 level.id = 1;
-let drawMapForLevel = (id) => {
+let drawMapWithId = (id) => {
   level.id = id;
   level.numRows = levels[id].map.length;
   level.numCols = levels[id].map[0].length;
@@ -40,5 +40,5 @@ let drawMapForLevel = (id) => {
     }
   }
 
-  // allGameObjects.push(allEnemies).push(player);
+
 };

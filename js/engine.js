@@ -79,20 +79,54 @@ var Engine = (function(global) {
       value: 'PLAY',
       class: 'button',
       id: 'b1'
-    }),
-    b2 = $('<input/>').attr({
-      type: 'button',
-      value: 'OPTION',
-      class: 'button',
-      id: 'b2'
-    })
+    }).css({
+      top: '50px'
+    });
 
-    $('#main-menu').append(b1).append(b2);
+    $('#main-menu').append(b1);
     $('#b1').click(function() {
       $('#main-menu').empty();
-      reset();
-      lastTime = Date.now();
-      main();
+      selectLevelMenu();
+    });
+  }
+
+  let selectLevelMenu = () => {
+    let top = 50;
+    for (let item in levels) {
+      let btValue = `Level ${parseInt(item) + 1}`;
+      let btId = `l${parseInt(item) + 1}`;
+      let button = $('<input/>').attr({
+        type: 'button',
+        value: btValue,
+        class: 'button button-level',
+        id: btId
+      }).css({
+        top: `${top + (top * parseInt(item)) / 2}px`
+      });
+      $('#main-menu').append(button);
+    }
+
+    let backButton = $('<input/>').attr({
+      type: 'button',
+      value: 'Back to Main Menu',
+      class: 'button',
+      id: 'buttonBack'
+    }).css({
+      top: `${top + (top * levels.length) / 2}px`
+    });
+    $('#main-menu').append(backButton);
+
+    $('.button-level').click(function() {
+      alert(this.id);
+      // drawMapWithId(this.id);
+      // reset();
+      // lastTime = Date.now();
+      // main();
+    });
+
+    $('#buttonBack').click(function() {
+      $('#main-menu').empty();
+      createMainMenu();
     });
   }
 
