@@ -22,6 +22,7 @@ var Engine = (function(global) {
   win = global.window,
   canvas = doc.createElement('canvas'),
   ctx = canvas.getContext('2d'),
+  playingGame = false,
   lastTime;
 
   canvas.width = 505;
@@ -61,7 +62,12 @@ var Engine = (function(global) {
     /* Use the browser's requestAnimationFrame function to call this
     * function again as soon as the browser is able to draw another frame.
     */
-    win.requestAnimationFrame(main);
+    if (playingGame) {
+      win.requestAnimationFrame(main);
+    } else {
+      win.cancelAnimationFrame(main);
+      ctx.clearRect(0,0,1000,1000);
+    }
   }
 
   /* This function does some initial setup that should only occur once,
@@ -74,6 +80,7 @@ var Engine = (function(global) {
 
   // Create the main menu buttons and their click funtions
   function createMainMenu() {
+
     let b1 = $('<input/>').attr({
       type: 'button',
       value: 'PLAY',
@@ -117,6 +124,7 @@ var Engine = (function(global) {
 
     $('.button-level').click(function() {
       // alert(this.id);
+      playingGame = true;
       drawMapWithId(this.id);
       reset();
       lastTime = Date.now();
@@ -124,8 +132,10 @@ var Engine = (function(global) {
     });
 
     $('#buttonBack').click(function() {
+      playingGame = false;
       $('#main-menu').empty();
       createMainMenu();
+
     });
   }
 
@@ -200,7 +210,7 @@ var Engine = (function(global) {
   */
   function reset() {
     for (let enemy of allEnemies) {
-      enemy.setStartPosition(0, vertical * randomIntFromInterval(1, 3));
+      enemy.setStartPosition();
     }
     player.setStartPosition(2 * horisontal, 5 * vertical);
   }

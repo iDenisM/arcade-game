@@ -33,6 +33,7 @@ let drawMapWithId = (id) => {
   level.id = id;
   level.numRows = levels[id].rows.length;
   level.numCols = levels[id].columns;
+
   for (let row = 0; row < level.numRows; row++) {
     level.rowImages[row] = [];
     for (let col = 0; col < level.numCols; col++) {

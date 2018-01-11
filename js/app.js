@@ -61,16 +61,56 @@ class Enemy extends GameObject {
     sprite = 'images/enemy-bug.png';
     super(sprite, id);
     this.speed = randomIntFromInterval(100, 250);
+    this.direction = randomIntFromInterval(0, 1);;
+  }
+
+  setStartPosition() {
+    this.direction = randomIntFromInterval(0, 1);
+    if (this.direction == 0) {
+      // set x coordinate
+      this.x = -horisontal;
+      // set sprite direction
+      // this.scale;
+    } else {
+      // set x coordinate
+      this.x = level.numCols * horisontal;
+      // set sprite direction
+      // this.scale(-1, 1);
+    }
+    // set y coordinate
+    this.y = vertical * randomIntFromInterval(1, 3);
   }
 
   update(dt) {
-    if (this.x <= mapCols * horisontal) {
-      this.x += this.speed * dt;
+    // direction to move is right
+    if (this.direction == 0) {
+      // move the enemy to right
+      if (this.x <= mapCols * horisontal) {
+        this.x += this.speed * dt;
+      }
+      // reset position
+      else {
+        // vertical position
+        this.setStartPosition();
+        // reset speed
+        this.speed = randomIntFromInterval(100, 250);
+      }
     }
-    else {
-      this.setStartPosition(-horisontal, vertical * randomIntFromInterval(1, 3));
-      this.speed = randomIntFromInterval(100, 250);
+    // direction to move is left
+    else if (this.direction == 1) {
+      // move the enemy to left
+      if (this.x >= -horisontal) {
+        this.x -= this.speed * dt;
+      }
+      // reset position
+      else {
+        // vertical position
+        this.setStartPosition();
+        // reset speed
+        this.speed = randomIntFromInterval(100, 250);
+      }
     }
+
   }
 };
 
