@@ -1,9 +1,6 @@
 const horisontal = 101,
-      vertical = 83,
-      startEmeniesCount = 3;
-let player,
-    allEnemies = [],
-    allGameObjects = [];
+      vertical = 83;
+
 
 // Create super class for all game objects
 class GameObject {
@@ -40,6 +37,7 @@ class GameObject {
 
   // Draw the game object on the screen, required method for game
   render() {
+    ctx.scale(1, 1);
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     this.bBox();
 
@@ -61,7 +59,8 @@ class Enemy extends GameObject {
     sprite = 'images/enemy-bug.png';
     super(sprite, id);
     this.speed = randomIntFromInterval(100, 250);
-    this.direction = randomIntFromInterval(0, 1);;
+    this.direction = randomIntFromInterval(0, 1);
+    this.maxColumns = 0;
   }
 
   setStartPosition() {
@@ -70,12 +69,12 @@ class Enemy extends GameObject {
       // set x coordinate
       this.x = -horisontal;
       // set sprite direction
-      // this.scale;
+      this.sprite = 'images/enemy-bug.png';
     } else {
       // set x coordinate
       this.x = level.numCols * horisontal;
       // set sprite direction
-      // this.scale(-1, 1);
+      this.sprite = 'images/enemy-bug-left.png';
     }
     // set y coordinate
     this.y = vertical * randomIntFromInterval(1, 3);
@@ -85,7 +84,7 @@ class Enemy extends GameObject {
     // direction to move is right
     if (this.direction == 0) {
       // move the enemy to right
-      if (this.x <= mapCols * horisontal) {
+      if (this.x <= this.maxColumns * horisontal) {
         this.x += this.speed * dt;
       }
       // reset position
@@ -120,6 +119,7 @@ class Player extends GameObject {
     sprite = 'images/char-boy.png';
     super(sprite, id);
     this.speed = 10;
+    this.canMove = false;
   }
 
   // Handle the control of the movement of the player
@@ -129,7 +129,7 @@ class Player extends GameObject {
         this.x -= horisontal;
     }
     else if (e === 'right') {
-      if (this.x < (mapCols - 1) * horisontal)
+      if (this.x < (level.numCols - 1) * horisontal)
         this.x += horisontal;
     }
     else if (e === 'up') {
@@ -137,7 +137,7 @@ class Player extends GameObject {
         this.y -= vertical;
     }
     else if (e === 'down') {
-      if (this.y < (mapRows - 1) * vertical)
+      if (this.y < (level.numRows - 1) * vertical)
         this.y += vertical;
     }
   }
@@ -164,30 +164,10 @@ let objectCollideArray = (objectThatCollide, arrayToCollide) => {
   return false;
 };
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
-document.addEventListener('keydown', function(e) {
-    var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
-        // Add touch movements
-    };
-
-    player.handleInput(allowedKeys[e.keyCode]);
-});
-
-// Now instantiate your objects.
-// Create three enemies for the begining
-for (let i = 0; i < startEmeniesCount; i++) {
-  let enemy = new Enemy();
-  enemy.id = i;
-  allEnemies.push(enemy);
+// Create the rock class
+class Rock extends GameObject {
+  constructor() {
+    sprite = 'images/Rock.png';
+    super(sprite, id);
+  }
 };
-
-// Place the player object in a variable called player
-player = new Player();
-player.id = 'player';
-
-// allGameObjects.push(allEnemies).push(player);

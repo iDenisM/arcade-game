@@ -1,13 +1,15 @@
-//-----------LEVEL LOADER-----------
-let mapRows = 6,
-    mapCols = 5;
+let player,
+    allEnemies = [],
+    allGameObjects = [];
 
+//-----------LEVEL LOADER-----------
 class Level {
   constructor(id, numRows, numCols) {
     this.id = id;
-    this.numRows = numRows;
-    this.numCols = numCols;
+    this.numRows = 0;
+    this.numCols = 0;
     this.rowImages = [];
+    this.enemies = 0;
   }
 
   generateMap() {
@@ -33,6 +35,7 @@ let drawMapWithId = (id) => {
   level.id = id;
   level.numRows = levels[id].rows.length;
   level.numCols = levels[id].columns;
+  level.enemies = levels[id].enemies;
 
   for (let row = 0; row < level.numRows; row++) {
     level.rowImages[row] = [];
@@ -40,6 +43,7 @@ let drawMapWithId = (id) => {
       level.rowImages[row][col] = levels[id].rows[row];
     }
   }
+
   if (levels[id].blocks) {
     for (let block = 0; block < levels[id].blocks.length; block++) {
       let row = levels[id].blocks[block][0],
@@ -48,4 +52,36 @@ let drawMapWithId = (id) => {
       level.rowImages[row][col] = sprite;
     }
   }
+
+  createAllEnemies(level.enemies, level.numCols);
 };
+
+let createAllEnemies = (enemies, columns) => {
+  allEnemies = [];
+  for (let i = 0; i < enemies; i++) {
+    let enemy = new Enemy();
+    enemy.id = i;
+    enemy.maxColumns = columns;
+    allEnemies.push(enemy);
+  };
+}
+// Now instantiate your objects.
+
+
+// Place the player object in a variable called player
+player = new Player();
+player.id = 'player';
+
+// This listens for key presses and sends the keys to your
+// Player.handleInput() method. You don't need to modify this.
+document.addEventListener('keydown', function(e) {
+    var allowedKeys = {
+        37: 'left',
+        38: 'up',
+        39: 'right',
+        40: 'down'
+        // Add touch movements
+    };
+
+    if (player.canMove) player.handleInput(allowedKeys[e.keyCode]);
+});

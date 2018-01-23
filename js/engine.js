@@ -33,6 +33,7 @@ var Engine = (function(global) {
     id: 'main-menu'
   });
   $('#container').append(menu);
+
   // doc.body.appendChild(canvas);
 
   /* This function serves as the kickoff point for the game loop itself
@@ -82,21 +83,42 @@ var Engine = (function(global) {
   function createMainMenu() {
 
     let b1 = $('<input/>').attr({
-      type: 'button',
-      value: 'PLAY',
-      class: 'button',
-      id: 'b1'
-    }).css({
-      top: '50px'
-    });
+          type: 'button',
+          value: 'PLAY',
+          class: 'button',
+          id: 'b1'
+        }).css({
+          top: '50px'
+        });
+        characterPanel = $('<div/>').attr({
+          id: 'character-panel'
+        }),
+        leftButton = $('<div/>').attr({
+          class: 'char-button',
+          id: 'char-left'
+        }),
+        rightButton = $('<div/>').attr({
+          class: 'char-button',
+          id: 'char-right'
+        }),
+        avatarContainer = $('<div/>').attr({
+          id: 'avatar-container'
+        });
 
-    $('#main-menu').append(b1);
+  //////////////
+  // TODO: CREATE ANIMATED SLIDER FOR AVATAR
+  //////////////
+
+    $('#main-menu').append(b1).append(characterPanel);
+    $('#character-panel').append(leftButton).append(avatarContainer).append(rightButton);
+
     $('#b1').click(function() {
       $('#main-menu').empty();
       selectLevelMenu();
     });
   }
 
+  // Select level menu
   let selectLevelMenu = () => {
     let top = 50;
     for (let item in levels) {
@@ -123,8 +145,10 @@ var Engine = (function(global) {
     $('#main-menu').append(backButton);
 
     $('.button-level').click(function() {
-      // alert(this.id);
+      $('#main-menu').empty();
+      inGameMenuButton();
       playingGame = true;
+      player.canMove = true;
       drawMapWithId(this.id);
       reset();
       lastTime = Date.now();
@@ -139,6 +163,47 @@ var Engine = (function(global) {
     });
   }
 
+  // Game Menu Main Button
+  let inGameMenuButton = () => {
+    let mainButton = $('<input/>').attr({
+      type: 'button',
+      value: 'MENU',
+      class: 'button',
+      id: 'button-ingame-main'
+    });
+
+    $('#main-menu').append(mainButton);
+
+    $('#button-ingame-main').click(function() {
+      // TODO: Blur effect on menu pause
+      // Player stop controller
+      player.canMove = false;
+      $('#main-menu').empty();
+      inGameMenuAllButtons();
+    });
+  }
+
+  // Game Menu All buttons
+  let inGameMenuAllButtons = () => {
+    let backToLevelsButton = $('<input/>').attr({
+      type: 'button',
+      value: 'Levels Menu',
+      class: 'button',
+      id: 'button-ingame-back-levels'
+    });
+    // TODO: Back to main game menu button
+    // TODO: Continue playing button
+
+    $('#main-menu').append(backToLevelsButton);
+
+    $('#button-ingame-back-levels').click(function() {
+      playingGame = false;
+      $('#main-menu').empty();
+      selectLevelMenu();
+    });
+
+    // TODO: in the continue click funcion activate player can move
+  }
   /* This function is called by main (our game loop) and itself calls all
   * of the functions which may need to update entity's data. Based on how
   * you implement your collision detection (when two entities occupy the
@@ -199,11 +264,40 @@ var Engine = (function(global) {
 
   }
 
+  /* This function check if objects in game
+  * collide with other objects in the games
+  * and react in some way after collision
+  */
   let checkCollisions = () => {
+    checkCollisionPlayerEnemy();
+    checkCollisionPlayerWater();
+  }
+
+  // This function check's if player collide with enemy
+  let checkCollisionPlayerEnemy = () => {
     if (objectCollideArray(player, allEnemies)) {
-      console.log('Loose Life');
+      // Player move to start position
+      resetPlayer();
+      // Player loose one life or loose game
     }
   }
+
+  // This function check's if player wolked in water
+  let checkCollisionPlayerWater = () => {
+    let playerX = player.x / horisontal,
+        playerY = player.y / vertical;
+    // The value of 1 is used to indicate the water sprite in level class
+    if (level.rowImages[playerY][playerX] === 1) {
+      // Player move to start position
+      resetPlayer();
+    }
+  }
+
+  // This function check's if player collide with rock
+  let checkCollisionPlayerRock = () => {
+
+  }
+
   /* This function does nothing but it could have been a good place to
   * handle game reset states - maybe a new game menu or a game over screen
   * those sorts of things. It's only called once by the init() method.
@@ -212,6 +306,11 @@ var Engine = (function(global) {
     for (let enemy of allEnemies) {
       enemy.setStartPosition();
     }
+    resetPlayer();
+  }
+
+  // This function resets only the player position
+  let resetPlayer = () => {
     player.setStartPosition(2 * horisontal, 5 * vertical);
   }
 
@@ -224,7 +323,9 @@ var Engine = (function(global) {
     'images/water-block.png',
     'images/grass-block.png',
     'images/enemy-bug.png',
-    'images/char-boy.png'
+    'images/enemy-bug-left.png',
+    'images/char-boy.png',
+    'images/Rock.png'
   ]);
   Resources.onReady(init);
 
