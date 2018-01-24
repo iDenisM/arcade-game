@@ -15,7 +15,10 @@ const levels = [
     'id': 'l2',
     'rows': [2,2,2,1,3,3],
     'columns': 5,
-    'enemies': 3
+    'enemies': 3,
+    'rocks': [
+      [2,4]
+    ]
   },
   {
     'id': 'l3',
@@ -28,9 +31,10 @@ const levels = [
       [2,4,3]
     ],
     'enemies': 4,
-    'rock': [
-      [5,1],
-      [4,2]
+    'rocks': [
+      [2,4],
+      [4,2],
+      [3,1]
     ]
   }
 ];

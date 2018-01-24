@@ -147,9 +147,9 @@ var Engine = (function(global) {
     $('.button-level').click(function() {
       $('#main-menu').empty();
       inGameMenuButton();
+      drawMapWithId(this.id);
       playingGame = true;
       player.canMove = true;
-      drawMapWithId(this.id);
       reset();
       lastTime = Date.now();
       main();
@@ -175,7 +175,8 @@ var Engine = (function(global) {
     $('#main-menu').append(mainButton);
 
     $('#button-ingame-main').click(function() {
-      // TODO: Blur effect on menu pause
+      // Blur effect on menu pause
+      $('#board').addClass('blur');
       // Player stop controller
       player.canMove = false;
       $('#main-menu').empty();
@@ -186,15 +187,22 @@ var Engine = (function(global) {
   // Game Menu All buttons
   let inGameMenuAllButtons = () => {
     let backToLevelsButton = $('<input/>').attr({
-      type: 'button',
-      value: 'Levels Menu',
-      class: 'button',
-      id: 'button-ingame-back-levels'
-    });
-    // TODO: Back to main game menu button
-    // TODO: Continue playing button
+          type: 'button',
+          value: 'Levels Menu',
+          class: 'button',
+          id: 'button-ingame-back-levels'
+        }),
+    // Continue playing button
+        continuePlayButton = $('<input/>').attr({
+          type: 'button',
+          value: 'Resume Play',
+          class: 'button',
+          id: 'button-ingame-continue'
+        }).css({
+          top: '50px'
+        })
 
-    $('#main-menu').append(backToLevelsButton);
+    $('#main-menu').append(backToLevelsButton).append(continuePlayButton);
 
     $('#button-ingame-back-levels').click(function() {
       playingGame = false;
@@ -202,7 +210,12 @@ var Engine = (function(global) {
       selectLevelMenu();
     });
 
-    // TODO: in the continue click funcion activate player can move
+    $('#button-ingame-continue').click(function() {
+      player.canMove = true;
+      $('#board').removeClass('blur');
+      $('#main-menu').empty();
+      inGameMenuButton();
+    });
   }
   /* This function is called by main (our game loop) and itself calls all
   * of the functions which may need to update entity's data. Based on how
@@ -260,8 +273,11 @@ var Engine = (function(global) {
       enemy.render();
     });
 
-    player.render();
+    for (let rock of allRocks) {
+      rock.render();
+    }
 
+    player.render();
   }
 
   /* This function check if objects in game
@@ -270,7 +286,20 @@ var Engine = (function(global) {
   */
   let checkCollisions = () => {
     checkCollisionPlayerEnemy();
-    checkCollisionPlayerWater();
+    checkCollisionPlayerRock();
+
+    if (checkCollisionWithWater(player)) resetPlayer;
+
+    for (const [i, rock] of allRocks.entries()) {
+      if (checkCollisionWithWater(rock)) {
+        // TODO: Modify the level cell to a new rock sprite
+        let x = rock.x / horisontal,
+            y = rock.y / vertical;
+        level.rowImages[y][x] = 2;
+        // Delete this rock
+        allRocks.splice(i, 1);
+      }
+    }
   }
 
   // This function check's if player collide with enemy
@@ -282,26 +311,69 @@ var Engine = (function(global) {
     }
   }
 
-  // This function check's if player wolked in water
-  let checkCollisionPlayerWater = () => {
-    let playerX = player.x / horisontal,
-        playerY = player.y / vertical;
+  // This function check's if object is in water
+  let checkCollisionWithWater = (gameObject) => {
+    let objX = gameObject.x / horisontal,
+        objY = gameObject.y / vertical;
     // The value of 1 is used to indicate the water sprite in level class
-    if (level.rowImages[playerY][playerX] === 1) {
+    if (level.rowImages[objY][objX] === 1) {
       // Player move to start position
-      resetPlayer();
+      // resetPlayer();
+      return true;
     }
+    return false;
   }
 
   // This function check's if player collide with rock
   let checkCollisionPlayerRock = () => {
-
+    if (objectCollideArray(player, allRocks)) {
+      for (let rock of allRocks) {
+        if (objectCollideObject(player, rock)) {
+          console.log(`Player collide ${rock.id}`);
+          // Player moved verticaly
+          if (player.x == player.lastX) {
+            // Player moved down
+            if (player.y > player.lastY) {
+              if (player.y / vertical == level.numRows - 1)
+                rock.y = player.lastY
+              else
+                rock.y += vertical;
+            }
+            // Player moved up
+            else {
+              if (player.y == 0)
+                rock.y = player.lastY
+              else
+                rock.y -= vertical;
+            }
+          }
+          // Player moved horisontaly
+          else {
+            // Player moved right
+            if (player.x > player.lastX) {
+              if (player.x / horisontal == level.numCols - 1)
+                rock.x = player.lastX
+              else
+                rock.x += horisontal;
+            }
+            // Player moved left
+            else {
+              if (player.x == 0)
+                rock.x = player.lastX
+              else
+                rock.x -= horisontal;
+            }
+          }
+        }
+      }
+    }
   }
 
   /* This function does nothing but it could have been a good place to
   * handle game reset states - maybe a new game menu or a game over screen
   * those sorts of things. It's only called once by the init() method.
   */
+  // TODO: Revise the reset method to work in game as a reset
   function reset() {
     for (let enemy of allEnemies) {
       enemy.setStartPosition();
@@ -311,7 +383,7 @@ var Engine = (function(global) {
 
   // This function resets only the player position
   let resetPlayer = () => {
-    player.setStartPosition(2 * horisontal, 5 * vertical);
+    player.setStartPosition(2, 5);
   }
 
   /* Go ahead and load all of the images we know we're going to need to

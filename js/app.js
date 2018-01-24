@@ -11,8 +11,8 @@ class GameObject {
 
   // Set the start position of the game object on the canvas
   setStartPosition(x, y) {
-    this.x = x;
-    this.y = y;
+    this.x = x * horisontal;
+    this.y = y * vertical;
   }
 
   // Bounding box
@@ -72,7 +72,7 @@ class Enemy extends GameObject {
       this.sprite = 'images/enemy-bug.png';
     } else {
       // set x coordinate
-      this.x = level.numCols * horisontal;
+      this.x = this.maxColumns * horisontal;
       // set sprite direction
       this.sprite = 'images/enemy-bug-left.png';
     }
@@ -122,23 +122,37 @@ class Player extends GameObject {
     this.canMove = false;
   }
 
+  // Player last position used for rock collision
+  setlastPosition() {
+    this.lastX = this.x;
+    this.lastY = this.y;
+  }
+
   // Handle the control of the movement of the player
   handleInput(e) {
     if (e === 'left') {
-      if (this.x > 0)
+      if (this.x > 0) {
+        this.setlastPosition();
         this.x -= horisontal;
+      }
     }
     else if (e === 'right') {
-      if (this.x < (level.numCols - 1) * horisontal)
+      if (this.x < (level.numCols - 1) * horisontal) {
+        this.setlastPosition();
         this.x += horisontal;
+      }
     }
     else if (e === 'up') {
-      if (this.y > 0)
+      if (this.y > 0) {
+        this.setlastPosition();
         this.y -= vertical;
+      }
     }
     else if (e === 'down') {
-      if (this.y < (level.numRows - 1) * vertical)
+      if (this.y < (level.numRows - 1) * vertical) {
+        this.setlastPosition();
         this.y += vertical;
+      }
     }
   }
 };
@@ -166,7 +180,7 @@ let objectCollideArray = (objectThatCollide, arrayToCollide) => {
 
 // Create the rock class
 class Rock extends GameObject {
-  constructor() {
+  constructor(sprite, id) {
     sprite = 'images/Rock.png';
     super(sprite, id);
   }

@@ -1,5 +1,6 @@
 let player,
     allEnemies = [],
+    allRocks = [],
     allGameObjects = [];
 
 //-----------LEVEL LOADER-----------
@@ -32,6 +33,7 @@ class Level {
 let level = new Level();
 level.id = 1;
 let drawMapWithId = (id) => {
+  // Create Map
   level.id = id;
   level.numRows = levels[id].rows.length;
   level.numCols = levels[id].columns;
@@ -53,24 +55,44 @@ let drawMapWithId = (id) => {
     }
   }
 
+  // Instantiate game objects.
+  allGameObjects = [];
   createAllEnemies(level.enemies, level.numCols);
+  createPlayer();
+  if (levels[id].rocks) createRocks(levels[id].rocks);
 };
 
+// Create Enemies fucntion
 let createAllEnemies = (enemies, columns) => {
   allEnemies = [];
   for (let i = 0; i < enemies; i++) {
     let enemy = new Enemy();
-    enemy.id = i;
+    enemy.id = 'e' + i;
     enemy.maxColumns = columns;
     allEnemies.push(enemy);
+    allGameObjects.push(enemy);
   };
 }
-// Now instantiate your objects.
 
+// Create Player
+let createPlayer = () => {
+  // Place the player object in a variable called player
+  player = new Player();
+  player.id = 'player';
+  allGameObjects.push(player);
+}
 
-// Place the player object in a variable called player
-player = new Player();
-player.id = 'player';
+// Create Rock
+let createRocks = (rocks) => {
+  let newRock;
+  allRocks = [];
+  for(const [i, rock] of rocks.entries()) {
+    newRock = new Rock();
+    newRock.id = 'r' + i;
+    newRock.setStartPosition(rock[0], rock[1]);
+    allRocks.push(newRock);
+  }
+}
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
