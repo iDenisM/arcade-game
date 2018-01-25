@@ -186,6 +186,7 @@ var Engine = (function(global) {
 
   // Game Menu All buttons
   let inGameMenuAllButtons = () => {
+    // Back to levels button
     let backToLevelsButton = $('<input/>').attr({
           type: 'button',
           value: 'Levels Menu',
@@ -206,6 +207,7 @@ var Engine = (function(global) {
 
     $('#button-ingame-back-levels').click(function() {
       playingGame = false;
+      $('#board').removeClass('blur');
       $('#main-menu').empty();
       selectLevelMenu();
     });
@@ -287,19 +289,9 @@ var Engine = (function(global) {
   let checkCollisions = () => {
     checkCollisionPlayerEnemy();
     checkCollisionPlayerRock();
+    checkCollisionWithWater();
 
-    if (checkCollisionWithWater(player)) resetPlayer;
 
-    for (const [i, rock] of allRocks.entries()) {
-      if (checkCollisionWithWater(rock)) {
-        // TODO: Modify the level cell to a new rock sprite
-        let x = rock.x / horisontal,
-            y = rock.y / vertical;
-        level.rowImages[y][x] = 2;
-        // Delete this rock
-        allRocks.splice(i, 1);
-      }
-    }
   }
 
   // This function check's if player collide with enemy
@@ -312,7 +304,7 @@ var Engine = (function(global) {
   }
 
   // This function check's if object is in water
-  let checkCollisionWithWater = (gameObject) => {
+  let collisionWithWater = (gameObject) => {
     let objX = gameObject.x / horisontal,
         objY = gameObject.y / vertical;
     // The value of 1 is used to indicate the water sprite in level class
@@ -322,6 +314,24 @@ var Engine = (function(global) {
       return true;
     }
     return false;
+  }
+
+  // This function check's if something collide with water
+  let checkCollisionWithWater = () => {
+    // Player collide with water
+    if (collisionWithWater(player)) resetPlayer;
+
+    // Rock collide with water
+    for (const [i, rock] of allRocks.entries()) {
+      if (collisionWithWater(rock)) {
+        // Modify the level cell to a new rock sprite
+        let x = rock.x / horisontal,
+            y = rock.y / vertical;
+        level.rowImages[y][x] = 2;
+        // Delete the rock that felt in water
+        allRocks.splice(i, 1);
+      }
+    }
   }
 
   // This function check's if player collide with rock
