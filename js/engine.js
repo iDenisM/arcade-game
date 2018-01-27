@@ -319,7 +319,7 @@ var Engine = (function(global) {
   // This function check's if something collide with water
   let checkCollisionWithWater = () => {
     // Player collide with water
-    if (collisionWithWater(player)) resetPlayer;
+    if (collisionWithWater(player)) resetPlayer();
 
     // Rock collide with water
     for (const [i, rock] of allRocks.entries()) {
