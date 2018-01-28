@@ -59,7 +59,7 @@ let drawMapWithId = (id) => {
   allGameObjects = [];
   createAllEnemies(level.enemies, level.numCols);
   createPlayer();
-  if (levels[id].rocks) createRocks(levels[id].rocks);
+  (levels[id].rocks) ? createRocks(levels[id].rocks) : createRocks([]);
 };
 
 // Create Enemies fucntion

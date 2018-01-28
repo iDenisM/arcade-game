@@ -210,6 +210,7 @@ var Engine = (function(global) {
       $('#board').removeClass('blur');
       $('#main-menu').empty();
       selectLevelMenu();
+      allGameObjects = [];
     });
 
     $('#button-ingame-continue').click(function() {
@@ -219,6 +220,32 @@ var Engine = (function(global) {
       inGameMenuButton();
     });
   }
+
+  // TODO: Player win window
+
+  // TODO: Player loose window
+  let inGameMenuLoose = () => {
+    if (inGameMenuLoose.done) return;
+    let resetButton = $('<input/>').attr({
+      type: 'button',
+      value: 'Reset',
+      class: 'button',
+      id: 'button-ingame-loose-reset'
+    });
+
+    // Use this parameter to execute function once
+    inGameMemuLoose.done = true;
+
+    $('button-ingame-loose-reset').click(function() {
+      inGameMenuLoose.done = false;
+    });
+  }
+  /*
+  * use function name plus option to make function execute once
+  * example: inGameMenuLoose.done = false;
+  */
+
+
   /* This function is called by main (our game loop) and itself calls all
   * of the functions which may need to update entity's data. Based on how
   * you implement your collision detection (when two entities occupy the
