@@ -257,7 +257,7 @@ var Engine = (function(global) {
   */
   function update(dt) {
     updateEntities(dt);
-    checkCollisions();
+    if (!player.win || !player.loose) checkCollisions();
   }
 
   /* This is called by the update function and loops through all of the
@@ -302,11 +302,15 @@ var Engine = (function(global) {
       enemy.render();
     });
 
+    player.render();
+
     for (let rock of allRocks) {
       rock.render();
     }
 
-    player.render();
+    for (let heart of allHearts) {
+      heart.render();
+    }
   }
 
   /* This function check if objects in game
@@ -314,19 +318,23 @@ var Engine = (function(global) {
   * and react in some way after collision
   */
   let checkCollisions = () => {
-    checkCollisionPlayerEnemy();
-    checkCollisionPlayerRock();
-    checkCollisionWithWater();
-
-
+    if (allHearts.length > 0) {
+      checkCollisionPlayerEnemy();
+      checkCollisionPlayerRock();
+      checkCollisionWithWater();
+    } else {
+      player.loose = true;
+      player.canMove = false;
+    }
   }
 
   // This function check's if player collide with enemy
   let checkCollisionPlayerEnemy = () => {
     if (objectCollideArray(player, allEnemies)) {
+      // Player loose one life or loose game
+      allHearts.pop();
       // Player move to start position
       resetPlayer();
-      // Player loose one life or loose game
     }
   }
 
@@ -434,7 +442,8 @@ var Engine = (function(global) {
     'images/enemy-bug.png',
     'images/enemy-bug-left.png',
     'images/char-boy.png',
-    'images/Rock.png'
+    'images/Rock.png',
+    'images/Heart.png'
   ]);
   Resources.onReady(init);
 

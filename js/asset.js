@@ -1,6 +1,7 @@
 let player,
     allEnemies = [],
     allRocks = [],
+    allHearts = [],
     allGameObjects = [];
 
 //-----------LEVEL LOADER-----------
@@ -60,6 +61,7 @@ let drawMapWithId = (id) => {
   createAllEnemies(level.enemies, level.numCols);
   createPlayer();
   (levels[id].rocks) ? createRocks(levels[id].rocks) : createRocks([]);
+  createHearts(3);
 };
 
 // Create Enemies fucntion
@@ -91,6 +93,7 @@ let createRocks = (rocks) => {
     newRock.id = 'r' + i;
     newRock.setStartPosition(rock[0], rock[1]);
     allRocks.push(newRock);
+    allGameObjects.push(newRock);
   }
 }
 
@@ -107,3 +110,17 @@ document.addEventListener('keydown', function(e) {
 
     if (player.canMove) player.handleInput(allowedKeys[e.keyCode]);
 });
+
+// Create Hearts
+let createHearts = (hearts) => {
+  let newHeart;
+  allHearts = [];
+  for (let i = 0; i < 3; i++) {
+    newHeart = new Heart();
+    newHeart.id = 'h' + i;
+    newHeart.x = i * 40;
+    newHeart.y = -10;
+    allHearts.push(newHeart);
+    allGameObjects.push(newHeart);
+  }
+}

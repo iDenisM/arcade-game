@@ -120,6 +120,8 @@ class Player extends GameObject {
     super(sprite, id);
     this.speed = 10;
     this.canMove = false;
+    this.win = false;
+    this.loose = false;
   }
 
   // Player last position used for rock collision
@@ -185,3 +187,15 @@ class Rock extends GameObject {
     super(sprite, id);
   }
 };
+
+// Create Hearts class
+class Heart extends GameObject {
+  constructor(sprite, id) {
+    sprite = 'images/Heart.png'
+    super(sprite, id);
+  }
+
+  render() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 35, 55);
+  }
+}
