@@ -222,10 +222,25 @@ var Engine = (function(global) {
   }
 
   // TODO: Player win window
+  let inGameMenuWin = () => {
+    if (this.done) return;
+    let nextLevelButton = $('<input/>').attr({
+      type: 'button',
+      value: 'Next Level',
+      class: 'button',
+      id: 'button-ingame-win-next'
+    });
+
+    this.done = true;
+
+    $('button-ingame-win-next').click(function() {
+      this.done = false;
+    });
+  }
 
   // TODO: Player loose window
   let inGameMenuLoose = () => {
-    if (inGameMenuLoose.done) return;
+    if (this.done) return;
     let resetButton = $('<input/>').attr({
       type: 'button',
       value: 'Reset',
@@ -234,10 +249,11 @@ var Engine = (function(global) {
     });
 
     // Use this parameter to execute function once
-    inGameMemuLoose.done = true;
+    this.done = true;
+    console.log('In game menu loose');
 
     $('button-ingame-loose-reset').click(function() {
-      inGameMenuLoose.done = false;
+      this.done = false;
     });
   }
   /*
@@ -311,6 +327,8 @@ var Engine = (function(global) {
     for (let heart of allHearts) {
       heart.render();
     }
+
+    key.render();
   }
 
   /* This function check if objects in game
@@ -325,6 +343,7 @@ var Engine = (function(global) {
     } else {
       player.loose = true;
       player.canMove = false;
+      inGameMenuLoose();
     }
   }
 
@@ -374,7 +393,6 @@ var Engine = (function(global) {
     if (objectCollideArray(player, allRocks)) {
       for (let rock of allRocks) {
         if (objectCollideObject(player, rock)) {
-          console.log(`Player collide ${rock.id}`);
           // Player moved verticaly
           if (player.x == player.lastX) {
             // Player moved down
@@ -443,7 +461,8 @@ var Engine = (function(global) {
     'images/enemy-bug-left.png',
     'images/char-boy.png',
     'images/Rock.png',
-    'images/Heart.png'
+    'images/Heart.png',
+    'images/Key.png'
   ]);
   Resources.onReady(init);
 

@@ -1,4 +1,5 @@
 let player,
+    key,
     allEnemies = [],
     allRocks = [],
     allHearts = [],
@@ -62,6 +63,7 @@ let drawMapWithId = (id) => {
   createPlayer();
   (levels[id].rocks) ? createRocks(levels[id].rocks) : createRocks([]);
   createHearts(3);
+  createKey(levels[id]);
 };
 
 // Create Enemies fucntion
@@ -123,4 +125,13 @@ let createHearts = (hearts) => {
     allHearts.push(newHeart);
     allGameObjects.push(newHeart);
   }
+}
+
+// Create the Key
+let createKey = (level) => {
+  key = new Key();
+  if (level.key)
+    key.setStartPosition(level.key[0], level.key[1])
+  else
+    key.setStartPosition(randomIntFromInterval(0, level.rows.length - 1), 0);
 }

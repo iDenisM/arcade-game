@@ -199,3 +199,11 @@ class Heart extends GameObject {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 35, 55);
   }
 }
+
+// Create the key
+class Key extends GameObject {
+  constructor(sprite, id) {
+    sprite = 'images/Key.png'
+    super(sprite, id);
+  }
+}
