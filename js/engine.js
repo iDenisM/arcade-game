@@ -13,17 +13,18 @@
  * writing app.js a little simpler to work with.
  */
 
-var Engine = (function(global) {
+let Engine = (function(global) {
   /* Predefine the variables we'll be using within this scope,
   * create the canvas element, grab the 2D context for that canvas
   * set the canvas elements height/width and add it to the DOM.
   */
-  var doc = global.document,
-  win = global.window,
-  canvas = doc.createElement('canvas'),
-  ctx = canvas.getContext('2d'),
-  playingGame = false,
-  lastTime;
+  let doc = global.document,
+      win = global.window,
+      canvas = doc.createElement('canvas'),
+      ctx = canvas.getContext('2d'),
+      playingGame = false,
+      slideIndex = 1,
+      lastTime;
 
   canvas.width = 505;
   canvas.height = 606;
@@ -33,8 +34,6 @@ var Engine = (function(global) {
     id: 'main-menu'
   });
   $('#container').append(menu);
-
-  // doc.body.appendChild(canvas);
 
   /* This function serves as the kickoff point for the game loop itself
   * and handles properly calling the update and render methods.
@@ -87,36 +86,73 @@ var Engine = (function(global) {
           value: 'PLAY',
           class: 'button',
           id: 'b1'
-        }).css({
-          top: '50px'
         });
         characterPanel = $('<div/>').attr({
           id: 'character-panel'
         }),
         leftButton = $('<div/>').attr({
-          class: 'char-button',
+          class: 'char-button arrow arrow-left',
           id: 'char-left'
         }),
         rightButton = $('<div/>').attr({
-          class: 'char-button',
+          class: 'char-button arrow',
           id: 'char-right'
         }),
         avatarContainer = $('<div/>').attr({
           id: 'avatar-container'
-        });
-
-  //////////////
-  // TODO: CREATE ANIMATED SLIDER FOR AVATAR
-  //////////////
+        }),
+        avatarImages = [
+          'images/char-boy.png',
+          'images/char-cat-girl.png',
+          'images/char-horn-girl.png',
+          'images/char-pink-girl.png',
+          'images/char-princess-girl.png'
+        ];
 
     $('#main-menu').append(b1).append(characterPanel);
     $('#character-panel').append(leftButton).append(avatarContainer).append(rightButton);
+
+    for (let avatar of avatarImages) {
+      let img = $('<img/>').attr({
+        src: avatar,
+        class: 'mySlides'
+      });
+      $('#avatar-container').append(img);
+    }
+
+    showSlides(slideIndex);
 
     $('#b1').click(function() {
       $('#main-menu').empty();
       selectLevelMenu();
     });
+
+    $('#char-left').click(function() {
+      plusSlides(-1);
+    });
+
+    $('#char-right').click(function() {
+      plusSlides(1);
+    });
   }
+
+  // Change the slide
+  let plusSlides = (n) => {
+    showSlides(slideIndex += n);
+  }
+  // Show slides function
+  let showSlides = (n) => {
+    let slides = $('.mySlides');
+    if (n >= slides.length) {
+      slideIndex = slides.length;
+    }
+    if (n < 1){
+      slideIndex = 1;
+    }
+    slides.css("display", "none");
+    $('.mySlides:nth-child('+ slideIndex +')').css('display', 'block');
+  }
+
 
   // Select level menu
   let selectLevelMenu = () => {
@@ -145,14 +181,8 @@ var Engine = (function(global) {
     $('#main-menu').append(backButton);
 
     $('.button-level').click(function() {
-      $('#main-menu').empty();
-      inGameMenuButton();
-      drawMapWithId(this.id);
-      playingGame = true;
-      player.canMove = true;
-      reset();
-      lastTime = Date.now();
-      main();
+      // Create level from id
+      resetLevel(this.id);
     });
 
     $('#buttonBack').click(function() {
@@ -186,24 +216,26 @@ var Engine = (function(global) {
 
   // Game Menu All buttons
   let inGameMenuAllButtons = () => {
-    // Back to levels button
     let backToLevelsButton = $('<input/>').attr({
           type: 'button',
           value: 'Levels Menu',
           class: 'button',
           id: 'button-ingame-back-levels'
         }),
-    // Continue playing button
+        resetLevelButton = $('<input/>').attr({
+          type: 'button',
+          value: 'Reset',
+          class: 'button',
+          id: 'button-ingame-reset'
+        }),
         continuePlayButton = $('<input/>').attr({
           type: 'button',
           value: 'Resume Play',
           class: 'button',
           id: 'button-ingame-continue'
-        }).css({
-          top: '50px'
-        })
+        });
 
-    $('#main-menu').append(backToLevelsButton).append(continuePlayButton);
+    $('#main-menu').append(resetLevelButton).append(backToLevelsButton).append(continuePlayButton);
 
     $('#button-ingame-back-levels').click(function() {
       playingGame = false;
@@ -218,6 +250,12 @@ var Engine = (function(global) {
       $('#board').removeClass('blur');
       $('#main-menu').empty();
       inGameMenuButton();
+    });
+
+    $('#button-ingame-reset').click(function() {
+      // Restart level
+      // playingGame = false;
+      resetLevel(parseInt(level.id));
     });
   }
 
@@ -491,6 +529,10 @@ var Engine = (function(global) {
     'images/enemy-bug.png',
     'images/enemy-bug-left.png',
     'images/char-boy.png',
+    'images/char-cat-girl.png',
+    'images/char-horn-girl.png',
+    'images/char-pink-girl.png',
+    'images/char-princess-girl.png',
     'images/Rock.png',
     'images/Heart.png',
     'images/Key.png'

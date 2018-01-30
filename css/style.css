@@ -3,17 +3,58 @@ body {
 }
 
 .button {
-  position: absolute;
   width: 40%;
-  margin: 0 30%;
+  margin: 10px 30%;
+}
+
+/*
+  Avatar style
+ */
+#character-panel {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .char-button {
-  background-color: #ffeb3b;
   width: 50px;
   height: 50px;
 }
 
+.arrow {
+  background-image: url("../images/arrow-orange.png");
+  background-size: 40px 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.arrow-left {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform:  rotate(180deg);
+}
+
+.mySlides {
+  display: none;
+}
+
+#char-left {
+  margin: 80px 0 auto auto;
+}
+
+#char-right {
+  margin: 80px auto auto 0;
+}
+
+#avatar-container {
+  width: 101px;
+}
+
+/*
+  Body Container
+*/
 #container {
   display: block;
   width: 505px;
@@ -32,16 +73,10 @@ body {
   flex-wrap: wrap;
 }
 
-#b1 {
-  top: 50px;
-}
-
-#b2 {
-  top: 75px;
-}
-
 .blur {
-  -webkit-filter:blur(5px);
-  -ms-filter:blur(5px);
-  filter:blur(5px);
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -ms-filter: blur(5px);
+  -o-filter: blur(5px);
+  filter: blur(5px);
 }
