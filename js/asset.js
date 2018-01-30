@@ -133,5 +133,6 @@ let createKey = (level) => {
   if (level.key)
     key.setStartPosition(level.key[0], level.key[1])
   else
-    key.setStartPosition(randomIntFromInterval(0, level.rows.length - 1), 0);
+    key.setStartPosition(randomIntFromInterval(0, level.columns - 1), 0);
+  allGameObjects.push(key);
 }

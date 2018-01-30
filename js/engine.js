@@ -221,9 +221,11 @@ var Engine = (function(global) {
     });
   }
 
-  // TODO: Player win window
+  // Player win window
   let inGameMenuWin = () => {
-    if (this.done) return;
+    if (player.win) return;
+    $('#board').addClass('blur');
+    $('#main-menu').empty();
     let nextLevelButton = $('<input/>').attr({
       type: 'button',
       value: 'Next Level',
@@ -231,16 +233,23 @@ var Engine = (function(global) {
       id: 'button-ingame-win-next'
     });
 
-    this.done = true;
+    $('#main-menu').append(nextLevelButton);
 
-    $('button-ingame-win-next').click(function() {
-      this.done = false;
+    player.win = true;
+    player.canMove = false;
+
+    $('#button-ingame-win-next').click(function() {
+      // Start next level
+      resetLevel(parseInt(level.id) + 1);
     });
   }
 
   // TODO: Player loose window
   let inGameMenuLoose = () => {
-    if (this.done) return;
+    if (player.loose) return;
+    $('#board').addClass('blur');
+    $('#main-menu').empty();
+    if (player.loose) return;
     let resetButton = $('<input/>').attr({
       type: 'button',
       value: 'Reset',
@@ -248,12 +257,14 @@ var Engine = (function(global) {
       id: 'button-ingame-loose-reset'
     });
 
-    // Use this parameter to execute function once
-    this.done = true;
-    console.log('In game menu loose');
+    $('#main-menu').append(resetButton);
 
-    $('button-ingame-loose-reset').click(function() {
-      this.done = false;
+    player.loose = true;
+    player.canMove = false;
+
+    $('#button-ingame-loose-reset').click(function() {
+      // Restart level
+      resetLevel(parseInt(level.id));
     });
   }
   /*
@@ -273,7 +284,7 @@ var Engine = (function(global) {
   */
   function update(dt) {
     updateEntities(dt);
-    if (!player.win || !player.loose) checkCollisions();
+    if (!player.win) checkCollisions();
   }
 
   /* This is called by the update function and loops through all of the
@@ -340,9 +351,8 @@ var Engine = (function(global) {
       checkCollisionPlayerEnemy();
       checkCollisionPlayerRock();
       checkCollisionWithWater();
+      checkCollisionWithKey();
     } else {
-      player.loose = true;
-      player.canMove = false;
       inGameMenuLoose();
     }
   }
@@ -432,11 +442,17 @@ var Engine = (function(global) {
     }
   }
 
+  // This function check's if the player reached the key
+  let checkCollisionWithKey = () => {
+    if (objectCollideObject(player, key)) {
+      inGameMenuWin();
+    }
+  }
+
   /* This function does nothing but it could have been a good place to
   * handle game reset states - maybe a new game menu or a game over screen
   * those sorts of things. It's only called once by the init() method.
   */
-  // TODO: Revise the reset method to work in game as a reset
   function reset() {
     for (let enemy of allEnemies) {
       enemy.setStartPosition();
@@ -447,6 +463,21 @@ var Engine = (function(global) {
   // This function resets only the player position
   let resetPlayer = () => {
     player.setStartPosition(2, 5);
+  }
+
+  // This function resets level
+  let resetLevel = (id) => {
+    $('#board').removeClass('blur');
+    $('#main-menu').empty();
+    inGameMenuButton();
+    drawMapWithId(id);
+    playingGame = true;
+    player.canMove = true;
+    player.win = false;
+    player.loose = false;
+    reset();
+    lastTime = Date.now();
+    main();
   }
 
   /* Go ahead and load all of the images we know we're going to need to
