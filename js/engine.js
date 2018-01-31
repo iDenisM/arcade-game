@@ -24,7 +24,14 @@ let Engine = (function(global) {
       ctx = canvas.getContext('2d'),
       playingGame = false,
       slideIndex = 1,
-      lastTime;
+      lastTime,
+      avatarImages = [
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png'
+      ]
 
   canvas.width = 505;
   canvas.height = 606;
@@ -100,14 +107,7 @@ let Engine = (function(global) {
         }),
         avatarContainer = $('<div/>').attr({
           id: 'avatar-container'
-        }),
-        avatarImages = [
-          'images/char-boy.png',
-          'images/char-cat-girl.png',
-          'images/char-horn-girl.png',
-          'images/char-pink-girl.png',
-          'images/char-princess-girl.png'
-        ];
+        });
 
     $('#main-menu').append(b1).append(characterPanel);
     $('#character-panel').append(leftButton).append(avatarContainer).append(rightButton);
@@ -150,6 +150,8 @@ let Engine = (function(global) {
       slideIndex = 1;
     }
     slides.css("display", "none");
+    console.log(slideIndex);
+
     $('.mySlides:nth-child('+ slideIndex +')').css('display', 'block');
   }
 
@@ -510,6 +512,7 @@ let Engine = (function(global) {
     inGameMenuButton();
     drawMapWithId(id);
     playingGame = true;
+    player.sprite = avatarImages[slideIndex - 1];
     player.canMove = true;
     player.win = false;
     player.loose = false;
