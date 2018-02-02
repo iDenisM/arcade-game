@@ -1,15 +1,45 @@
 body {
+  font-family: 'Gloria Hallelujah', cursive, sans-serif;
+}
 
+.no-select {
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;
 }
 
 .button {
   width: 40%;
   margin: 10px 30%;
+  background-color: #f3f3f3;
+  box-shadow: 5px 7px 25px 0px rgba(46,61,73,0.37);
+}
+
+.button-text {
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.panel-text {
+  text-align: center;
+  width: 100%;
+}
+
+/*
+  Main Menu
+*/
+#main-title {
+  font-size: 50px;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0 auto;
 }
 
 /*
   Avatar style
- */
+*/
 #character-panel {
   display: flex;
   flex-wrap: wrap;
@@ -53,8 +83,24 @@ body {
 }
 
 /*
+  Levels Menu
+*/
+#back-button {
+  background-color: #fddede;
+  margin-top: 20px;
+}
+
+/*
   Body Container
 */
+.blur {
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -ms-filter: blur(5px);
+  -o-filter: blur(5px);
+  filter: blur(5px);
+}
+
 #container {
   display: block;
   width: 505px;
@@ -73,10 +119,19 @@ body {
   flex-wrap: wrap;
 }
 
-.blur {
-  -webkit-filter: blur(5px);
-  -moz-filter: blur(5px);
-  -ms-filter: blur(5px);
-  -o-filter: blur(5px);
-  filter: blur(5px);
+/*
+  Game Menu
+*/
+#button-ingame-main {
+  width: 20%;
+  height: 2em;
+  margin: 0.3em auto;
+}
+
+.ingame-panel {
+
+}
+
+.button-ingame-menu {
+
 }

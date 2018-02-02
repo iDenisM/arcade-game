@@ -42,9 +42,9 @@ class GameObject {
     this.bBox();
 
     //Debugging bBox
-    ctx.beginPath();
-    ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
-    ctx.stroke();
+    // ctx.beginPath();
+    // ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
+    // ctx.stroke();
   }
 };
 

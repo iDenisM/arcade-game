@@ -88,15 +88,19 @@ let Engine = (function(global) {
   // Create the main menu buttons and their click funtions
   function createMainMenu() {
 
-    let b1 = $('<input/>').attr({
-          type: 'button',
-          value: 'PLAY',
-          class: 'button',
-          id: 'b1'
+    let title = $('<p/>').text('crazy ladybug').attr({
+          class: 'no-select',
+          id: 'main-title'
         });
+        playButton = $('<div/>').attr({
+          class: 'button no-select',
+          id: 'play-button'
+        }),
+        playButtonText = $('<p/>').text('play').attr('class', 'button-text'),
         characterPanel = $('<div/>').attr({
           id: 'character-panel'
         }),
+        characterText = $('<p/>').text('choose your character').attr('class', 'no-select panel-text');
         leftButton = $('<div/>').attr({
           class: 'char-button arrow arrow-left',
           id: 'char-left'
@@ -109,8 +113,9 @@ let Engine = (function(global) {
           id: 'avatar-container'
         });
 
-    $('#main-menu').append(b1).append(characterPanel);
-    $('#character-panel').append(leftButton).append(avatarContainer).append(rightButton);
+    $('#main-menu').append(title).append(playButton).append(characterPanel);
+    playButton.append(playButtonText);
+    characterPanel.append(characterText).append(leftButton).append(avatarContainer).append(rightButton);
 
     for (let avatar of avatarImages) {
       let img = $('<img/>').attr({
@@ -122,7 +127,7 @@ let Engine = (function(global) {
 
     showSlides(slideIndex);
 
-    $('#b1').click(function() {
+    $('#play-button').click(function() {
       $('#main-menu').empty();
       selectLevelMenu();
     });
@@ -143,15 +148,16 @@ let Engine = (function(global) {
   // Show slides function
   let showSlides = (n) => {
     let slides = $('.mySlides');
+    // Set borders for the sliders
     if (n >= slides.length) {
       slideIndex = slides.length;
     }
     if (n < 1){
       slideIndex = 1;
     }
+    // Set all children style to display none
     slides.css("display", "none");
-    console.log(slideIndex);
-
+    // Turn on only the one with corresponding slideIndex value
     $('.mySlides:nth-child('+ slideIndex +')').css('display', 'block');
   }
 
@@ -160,34 +166,38 @@ let Engine = (function(global) {
   let selectLevelMenu = () => {
     let top = 50;
     for (let item in levels) {
-      let btValue = `Level ${parseInt(item) + 1}`;
-      let button = $('<input/>').attr({
-        type: 'button',
-        value: btValue,
-        class: 'button button-level',
-        id: `${parseInt(item)}`
-      }).css({
-        top: `${top + (top * parseInt(item)) / 2}px`
-      });
+      let btValue = `Level ${parseInt(item) + 1}`,
+          button = $('<div/>').attr({
+            class: 'button button-level no-select',
+            id: `${parseInt(item)}`
+          }),
+          buttonText = $('<p/>').text(btValue).attr('class', 'button-text'),
+          button1 = $('<input/>').attr({
+            type: 'button',
+            value: btValue,
+            class: 'button button-level',
+            id: `${parseInt(item)}`
+          }).css({
+            top: `${top + (top * parseInt(item)) / 2}px`
+          });
       $('#main-menu').append(button);
+      button.append(buttonText);
     }
 
-    let backButton = $('<input/>').attr({
-      type: 'button',
-      value: 'Back to Main Menu',
-      class: 'button',
-      id: 'buttonBack'
-    }).css({
-      top: `${top + (top * levels.length) / 2}px`
-    });
+    let backButton = $('<div/>').attr({
+          class: 'button no-select',
+          id: 'back-button'
+        }),
+        backButtonText = $('<p/>').text('Main Menu').attr('class', 'button-text');
     $('#main-menu').append(backButton);
+    backButton.append(backButtonText);
 
     $('.button-level').click(function() {
       // Create level from id
       resetLevel(this.id);
     });
 
-    $('#buttonBack').click(function() {
+    $('#back-button').click(function() {
       playingGame = false;
       $('#main-menu').empty();
       createMainMenu();
@@ -197,14 +207,14 @@ let Engine = (function(global) {
 
   // Game Menu Main Button
   let inGameMenuButton = () => {
-    let mainButton = $('<input/>').attr({
-      type: 'button',
-      value: 'MENU',
-      class: 'button',
-      id: 'button-ingame-main'
-    });
+    let mainButton = $('<div/>').attr({
+          class: 'button no-select',
+          id: 'button-ingame-main'
+        }),
+        mainButtonText = $('<p/>').text('menu').attr('class', 'button-text');
 
     $('#main-menu').append(mainButton);
+    mainButton.append(mainButtonText);
 
     $('#button-ingame-main').click(function() {
       // Blur effect on menu pause
