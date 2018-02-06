@@ -292,7 +292,7 @@ let Engine = (function(global) {
     player.win = true;
     player.canMove = false;
 
-    $('#button-ingame-win-next').click(function() {
+    nextLevelButton.click(function() {
       // Start next level
       resetLevel(parseInt(level.id) + 1);
     });
@@ -304,21 +304,37 @@ let Engine = (function(global) {
     $('#board').addClass('blur');
     mainMenu.empty();
     if (player.loose) return;
-    let resetButton = $('<input/>').attr({
-      type: 'button',
-      value: 'Reset',
-      class: 'button',
-      id: 'button-ingame-loose-reset'
-    });
+    let resetButton = $('<div/>').attr({
+          class: 'button  button-ingame-menu no-select',
+          id: 'button-ingame-loose-reset'
+        }),
+        resetButtonText = $('<p/>').text('restart level').attr('class', 'button-text'),
+        exitToLevelsMenuButton = $('<div/>').attr({
+          class: 'button  button-ingame-menu no-select',
+          id: 'button-exit-levels-menu'
+        }),
+        exitToLevelsMenuButtonText = $('<p/>').text('exit').attr('class', 'button-text');
 
-    mainMenu.append(resetButton);
+    gameMenuPanel.empty();
+    mainMenu.append(gameMenuPanel);
+    gameMenuPanel.append(resetButton).append(exitToLevelsMenuButton);
+    resetButton.append(resetButtonText);
+    exitToLevelsMenuButton.append(exitToLevelsMenuButtonText);
 
     player.loose = true;
     player.canMove = false;
 
-    $('#button-ingame-loose-reset').click(function() {
+    resetButton.click(function() {
       // Restart level
       resetLevel(parseInt(level.id));
+    });
+    exitToLevelsMenuButton.click(function() {
+      // Exit level and open the levels menu
+      playingGame = false;
+      $('#board').removeClass('blur');
+      mainMenu.empty();
+      selectLevelMenu();
+      allGameObjects = [];
     });
   }
   /*
