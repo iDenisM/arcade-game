@@ -31,16 +31,17 @@ let Engine = (function(global) {
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
         'images/char-princess-girl.png'
-      ]
+      ],
+      gameMenuPanel = $('<div/>').attr('class', 'ingame-panel');
 
   canvas.width = 505;
   canvas.height = 606;
   $('#container').append(canvas);
   $('canvas').attr({id: 'board'});
-  let menu = $('<div/>').attr({
+  let mainMenu = $('<div/>').attr({
     id: 'main-menu'
   });
-  $('#container').append(menu);
+  $('#container').append(mainMenu);
 
   /* This function serves as the kickoff point for the game loop itself
   * and handles properly calling the update and render methods.
@@ -113,7 +114,7 @@ let Engine = (function(global) {
           id: 'avatar-container'
         });
 
-    $('#main-menu').append(title).append(playButton).append(characterPanel);
+    mainMenu.append(title).append(playButton).append(characterPanel);
     playButton.append(playButtonText);
     characterPanel.append(characterText).append(leftButton).append(avatarContainer).append(rightButton);
 
@@ -180,7 +181,7 @@ let Engine = (function(global) {
           }).css({
             top: `${top + (top * parseInt(item)) / 2}px`
           });
-      $('#main-menu').append(button);
+      mainMenu.append(button);
       button.append(buttonText);
     }
 
@@ -189,7 +190,7 @@ let Engine = (function(global) {
           id: 'back-button'
         }),
         backButtonText = $('<p/>').text('Main Menu').attr('class', 'button-text');
-    $('#main-menu').append(backButton);
+    mainMenu.append(backButton);
     backButton.append(backButtonText);
 
     $('.button-level').click(function() {
@@ -199,7 +200,7 @@ let Engine = (function(global) {
 
     $('#back-button').click(function() {
       playingGame = false;
-      $('#main-menu').empty();
+      mainMenu.empty();
       createMainMenu();
 
     });
@@ -213,7 +214,7 @@ let Engine = (function(global) {
         }),
         mainButtonText = $('<p/>').text('menu').attr('class', 'button-text');
 
-    $('#main-menu').append(mainButton);
+    mainMenu.append(mainButton);
     mainButton.append(mainButtonText);
 
     $('#button-ingame-main').click(function() {
@@ -221,38 +222,39 @@ let Engine = (function(global) {
       $('#board').addClass('blur');
       // Player stop controller
       player.canMove = false;
-      $('#main-menu').empty();
+      mainMenu.empty();
       inGameMenuAllButtons();
     });
   }
 
   // Game Menu All buttons
   let inGameMenuAllButtons = () => {
-    let backToLevelsButton = $('<input/>').attr({
-          type: 'button',
-          value: 'Levels Menu',
-          class: 'button',
+    let backToLevelsButton = $('<div/>').attr({
+          class: 'button  button-ingame-menu no-select',
           id: 'button-ingame-back-levels'
         }),
-        resetLevelButton = $('<input/>').attr({
-          type: 'button',
-          value: 'Reset',
-          class: 'button',
+        backToLevelsButtonText = $('<p/>').text('levels menu').attr('class', 'button-text'),
+        resetLevelButton = $('<div/>').attr({
+          class: 'button  button-ingame-menu no-select',
           id: 'button-ingame-reset'
         }),
-        continuePlayButton = $('<input/>').attr({
-          type: 'button',
-          value: 'Resume Play',
-          class: 'button',
+        resetLevelButtonText = $('<p/>').text('reset').attr('class', 'button-text'),
+        continuePlayButton = $('<div/>').attr({
+          class: 'button  button-ingame-menu no-select',
           id: 'button-ingame-continue'
-        });
+        }),
+        continuePlayButtonText = $('<p/>').text('continue').attr('class', 'button-text');
 
-    $('#main-menu').append(resetLevelButton).append(backToLevelsButton).append(continuePlayButton);
+    mainMenu.append(gameMenuPanel);
+    gameMenuPanel.append(continuePlayButton).append(resetLevelButton).append(backToLevelsButton);
+    backToLevelsButton.append(backToLevelsButtonText);
+    resetLevelButton.append(resetLevelButtonText);
+    continuePlayButton.append(continuePlayButtonText);
 
     $('#button-ingame-back-levels').click(function() {
       playingGame = false;
       $('#board').removeClass('blur');
-      $('#main-menu').empty();
+      mainMenu.empty();
       selectLevelMenu();
       allGameObjects = [];
     });
@@ -260,7 +262,7 @@ let Engine = (function(global) {
     $('#button-ingame-continue').click(function() {
       player.canMove = true;
       $('#board').removeClass('blur');
-      $('#main-menu').empty();
+      mainMenu.empty();
       inGameMenuButton();
     });
 
@@ -275,15 +277,17 @@ let Engine = (function(global) {
   let inGameMenuWin = () => {
     if (player.win) return;
     $('#board').addClass('blur');
-    $('#main-menu').empty();
-    let nextLevelButton = $('<input/>').attr({
-      type: 'button',
-      value: 'Next Level',
-      class: 'button',
-      id: 'button-ingame-win-next'
-    });
+    mainMenu.empty();
+    let nextLevelButton = $('<div/>').attr({
+          class: 'button  button-ingame-menu no-select',
+          id: 'button-ingame-win-next'
+        })
+        nextLevelButtonText = $('<p/>').text('next level').attr('class', 'button-text');
 
-    $('#main-menu').append(nextLevelButton);
+    gameMenuPanel.empty();
+    mainMenu.append(gameMenuPanel);
+    gameMenuPanel.append(nextLevelButton);
+    nextLevelButton.append(nextLevelButtonText);
 
     player.win = true;
     player.canMove = false;
@@ -294,11 +298,11 @@ let Engine = (function(global) {
     });
   }
 
-  // TODO: Player loose window
+  // Player loose window
   let inGameMenuLoose = () => {
     if (player.loose) return;
     $('#board').addClass('blur');
-    $('#main-menu').empty();
+    mainMenu.empty();
     if (player.loose) return;
     let resetButton = $('<input/>').attr({
       type: 'button',
@@ -307,7 +311,7 @@ let Engine = (function(global) {
       id: 'button-ingame-loose-reset'
     });
 
-    $('#main-menu').append(resetButton);
+    mainMenu.append(resetButton);
 
     player.loose = true;
     player.canMove = false;

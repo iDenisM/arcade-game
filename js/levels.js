@@ -7,8 +7,12 @@ const getMapSprite = {
 const levels = [
   {
     'id': 'l1',
-    'rows': [3,2,2,2,3,3],  // This is the base of the map
+    // This is the base layer of the map
+    // Also the length is the rows number
+    'rows': [3,2,2,2,3,3],
+    // The columns number
     'columns': 5,
+    // The enemies number
     'enemies': 3
   },
   {
@@ -16,6 +20,7 @@ const levels = [
     'rows': [2,2,2,1,3,3],
     'columns': 5,
     'enemies': 3,
+    // Rocks position
     'rocks': [
       [2,4]
     ]
@@ -24,6 +29,8 @@ const levels = [
     'id': 'l3',
     'rows': [1,1,1,1,3,3],
     'columns': 5,
+    // Blocks used to overlay the base layer of the map
+    // This way you can create different map pattern
     'blocks':
     [
       [1,1,3],
@@ -36,6 +43,8 @@ const levels = [
       [4,2],
       [3,1]
     ],
+    // If the key is set then it uses the strict coordinates
+    // If not then it's been set randomly
     'key': [1,1]
   }
 ];
