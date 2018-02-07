@@ -14,7 +14,8 @@
  */
 
 let Engine = (function(global) {
-  /* Predefine the variables we'll be using within this scope,
+  /*
+  * Predefine the variables we'll be using within this scope,
   * create the canvas element, grab the 2D context for that canvas
   * set the canvas elements height/width and add it to the DOM.
   */
@@ -37,7 +38,7 @@ let Engine = (function(global) {
   canvas.width = 505;
   canvas.height = 606;
   $('#container').append(canvas);
-  $('canvas').attr({id: 'board'});
+  $('canvas').attr('id', 'board');
   let mainMenu = $('<div/>').attr({
     id: 'main-menu'
   });
@@ -229,12 +230,7 @@ let Engine = (function(global) {
 
   // Game Menu All buttons
   let inGameMenuAllButtons = () => {
-    let backToLevelsButton = $('<div/>').attr({
-          class: 'button  button-ingame-menu no-select',
-          id: 'button-ingame-back-levels'
-        }),
-        backToLevelsButtonText = $('<p/>').text('levels menu').attr('class', 'button-text'),
-        resetLevelButton = $('<div/>').attr({
+    let resetLevelButton = $('<div/>').attr({
           class: 'button  button-ingame-menu no-select',
           id: 'button-ingame-reset'
         }),
@@ -246,18 +242,10 @@ let Engine = (function(global) {
         continuePlayButtonText = $('<p/>').text('continue').attr('class', 'button-text');
 
     mainMenu.append(gameMenuPanel);
-    gameMenuPanel.append(continuePlayButton).append(resetLevelButton).append(backToLevelsButton);
-    backToLevelsButton.append(backToLevelsButtonText);
+    gameMenuPanel.append(continuePlayButton).append(resetLevelButton);
+    backToLevelsMenuButton(gameMenuPanel);
     resetLevelButton.append(resetLevelButtonText);
     continuePlayButton.append(continuePlayButtonText);
-
-    $('#button-ingame-back-levels').click(function() {
-      playingGame = false;
-      $('#board').removeClass('blur');
-      mainMenu.empty();
-      selectLevelMenu();
-      allGameObjects = [];
-    });
 
     $('#button-ingame-continue').click(function() {
       player.canMove = true;
@@ -268,7 +256,6 @@ let Engine = (function(global) {
 
     $('#button-ingame-reset').click(function() {
       // Restart level
-      // playingGame = false;
       resetLevel(parseInt(level.id));
     });
   }
@@ -288,6 +275,7 @@ let Engine = (function(global) {
     mainMenu.append(gameMenuPanel);
     gameMenuPanel.append(nextLevelButton);
     nextLevelButton.append(nextLevelButtonText);
+    backToLevelsMenuButton(gameMenuPanel);
 
     player.win = true;
     player.canMove = false;
@@ -308,18 +296,13 @@ let Engine = (function(global) {
           class: 'button  button-ingame-menu no-select',
           id: 'button-ingame-loose-reset'
         }),
-        resetButtonText = $('<p/>').text('restart level').attr('class', 'button-text'),
-        exitToLevelsMenuButton = $('<div/>').attr({
-          class: 'button  button-ingame-menu no-select',
-          id: 'button-exit-levels-menu'
-        }),
-        exitToLevelsMenuButtonText = $('<p/>').text('exit').attr('class', 'button-text');
+        resetButtonText = $('<p/>').text('restart level').attr('class', 'button-text');
 
     gameMenuPanel.empty();
     mainMenu.append(gameMenuPanel);
-    gameMenuPanel.append(resetButton).append(exitToLevelsMenuButton);
+    gameMenuPanel.append(resetButton);
     resetButton.append(resetButtonText);
-    exitToLevelsMenuButton.append(exitToLevelsMenuButtonText);
+    backToLevelsMenuButton(gameMenuPanel);
 
     player.loose = true;
     player.canMove = false;
@@ -328,6 +311,19 @@ let Engine = (function(global) {
       // Restart level
       resetLevel(parseInt(level.id));
     });
+  }
+
+  // Create back to levels menu button fucntion
+  let backToLevelsMenuButton = (appendTo) => {
+    let exitToLevelsMenuButton = $('<div/>').attr({
+          class: 'button  button-ingame-menu no-select',
+          id: 'button-exit-levels-menu'
+        }),
+        exitToLevelsMenuButtonText = $('<p/>').text('exit').attr('class', 'button-text');
+
+    appendTo.append(exitToLevelsMenuButton);
+    exitToLevelsMenuButton.append(exitToLevelsMenuButtonText);
+
     exitToLevelsMenuButton.click(function() {
       // Exit level and open the levels menu
       playingGame = false;
@@ -337,11 +333,6 @@ let Engine = (function(global) {
       allGameObjects = [];
     });
   }
-  /*
-  * use function name plus option to make function execute once
-  * example: inGameMenuLoose.done = false;
-  */
-
 
   /* This function is called by main (our game loop) and itself calls all
   * of the functions which may need to update entity's data. Based on how
