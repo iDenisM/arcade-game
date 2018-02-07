@@ -191,6 +191,7 @@ let Engine = (function(global) {
           id: 'back-button'
         }),
         backButtonText = $('<p/>').text('Main Menu').attr('class', 'button-text');
+
     mainMenu.append(backButton);
     backButton.append(backButtonText);
 
@@ -241,6 +242,7 @@ let Engine = (function(global) {
         }),
         continuePlayButtonText = $('<p/>').text('continue').attr('class', 'button-text');
 
+    gameMenuPanel.empty();
     mainMenu.append(gameMenuPanel);
     gameMenuPanel.append(continuePlayButton).append(resetLevelButton);
     backToLevelsMenuButton(gameMenuPanel);
@@ -268,13 +270,15 @@ let Engine = (function(global) {
     let nextLevelButton = $('<div/>').attr({
           class: 'button  button-ingame-menu no-select',
           id: 'button-ingame-win-next'
-        })
+        }),
         nextLevelButtonText = $('<p/>').text('next level').attr('class', 'button-text');
 
     gameMenuPanel.empty();
     mainMenu.append(gameMenuPanel);
-    gameMenuPanel.append(nextLevelButton);
-    nextLevelButton.append(nextLevelButtonText);
+    if (parseInt(level.id) < levels.length - 1) {
+      gameMenuPanel.append(nextLevelButton);
+      nextLevelButton.append(nextLevelButtonText);
+    }
     backToLevelsMenuButton(gameMenuPanel);
 
     player.win = true;
