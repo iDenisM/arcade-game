@@ -166,22 +166,16 @@ let Engine = (function(global) {
 
   // Select level menu
   let selectLevelMenu = () => {
-    let top = 50;
+    mainMenu.empty();
+    let levelText = $('<p/>').text('choose a level').attr('class', 'no-select button-text');
+    mainMenu.append(levelText);
     for (let item in levels) {
       let btValue = `Level ${parseInt(item) + 1}`,
           button = $('<div/>').attr({
             class: 'button button-level no-select',
             id: `${parseInt(item)}`
           }),
-          buttonText = $('<p/>').text(btValue).attr('class', 'button-text'),
-          button1 = $('<input/>').attr({
-            type: 'button',
-            value: btValue,
-            class: 'button button-level',
-            id: `${parseInt(item)}`
-          }).css({
-            top: `${top + (top * parseInt(item)) / 2}px`
-          });
+          buttonText = $('<p/>').text(btValue).attr('class', 'button-text');
       mainMenu.append(button);
       button.append(buttonText);
     }
@@ -240,11 +234,12 @@ let Engine = (function(global) {
           class: 'button  button-ingame-menu no-select',
           id: 'button-ingame-continue'
         }),
-        continuePlayButtonText = $('<p/>').text('continue').attr('class', 'button-text');
+        continuePlayButtonText = $('<p/>').text('continue').attr('class', 'button-text'),
+        pauseText = $('<p/>').text('pause').attr('class', 'button-text');
 
     gameMenuPanel.empty();
     mainMenu.append(gameMenuPanel);
-    gameMenuPanel.append(continuePlayButton).append(resetLevelButton);
+    gameMenuPanel.append(pauseText).append(continuePlayButton).append(resetLevelButton);
     backToLevelsMenuButton(gameMenuPanel);
     resetLevelButton.append(resetLevelButtonText);
     continuePlayButton.append(continuePlayButtonText);
@@ -271,10 +266,12 @@ let Engine = (function(global) {
           class: 'button  button-ingame-menu no-select',
           id: 'button-ingame-win-next'
         }),
-        nextLevelButtonText = $('<p/>').text('next level').attr('class', 'button-text');
+        nextLevelButtonText = $('<p/>').text('next level').attr('class', 'button-text'),
+        winnerMessage = $('<p/>').text('you have passed the level').attr('class', 'no-select button-text');
 
     gameMenuPanel.empty();
     mainMenu.append(gameMenuPanel);
+    gameMenuPanel.append(winnerMessage);
     if (parseInt(level.id) < levels.length - 1) {
       gameMenuPanel.append(nextLevelButton);
       nextLevelButton.append(nextLevelButtonText);

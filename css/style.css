@@ -19,7 +19,7 @@ body {
 .button-text {
   text-align: center;
   text-transform: uppercase;
-  margin: 0;
+  margin: auto;
 }
 
 .panel-text {

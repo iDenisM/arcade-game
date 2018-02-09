@@ -27,6 +27,19 @@ const levels = [
   },
   {
     'id': 'l3',
+    'rows': [2,2,2,1,3,3],
+    'columns': 5,
+    'blocks': [
+      [1,1,1],
+      [1,3,1]
+    ],
+    'enemies': 3,
+    'rocks': [
+      [0,5]
+    ]
+  },
+  {
+    'id': 'l4',
     'rows': [1,1,1,1,3,3],
     'columns': 5,
     // Blocks used to overlay the base layer of the map
