@@ -112,6 +112,7 @@ let Engine = (function(global) {
           id: 'char-right'
         }),
         avatarContainer = $('<div/>').attr({
+          class: 'no-select',
           id: 'avatar-container'
         });
 
@@ -147,15 +148,25 @@ let Engine = (function(global) {
   let plusSlides = (n) => {
     showSlides(slideIndex += n);
   }
+
   // Show slides function
   let showSlides = (n) => {
     let slides = $('.mySlides');
     // Set borders for the sliders
     if (n >= slides.length) {
       slideIndex = slides.length;
+      $('#char-right').addClass('arrow-last');
     }
-    if (n < 1){
+
+    if (n <= 1){
       slideIndex = 1;
+      $('#char-left').addClass('arrow-last');
+      $('#char-right').removeClass('arrow-last');
+    }
+
+    if (n > 1 && n < slides.length) {
+      $('#char-left').removeClass('arrow-last');
+      $('#char-right').removeClass('arrow-last');
     }
     // Set all children style to display none
     slides.css("display", "none");
