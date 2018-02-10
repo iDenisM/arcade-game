@@ -17,11 +17,11 @@ class GameObject {
 
   // Bounding box
   bBox () {
-    let bX = 5;
-    let bY = 55;
+    let bX = 5,
+        bY = 55;
     // Create the rectangle for the bounding box
-    this.bBoxX = this.x + 5;
-    this.bBoxY = this.y + 55;
+    this.bBoxX = this.x + bX;
+    this.bBoxY = this.y + bY;
     // set width and heigth to 0 or center it in the board cell
     this.bBoxWidth = horisontal - bX * 2;
     this.bBoxHeight = 171 - 50 * 2;
@@ -41,7 +41,7 @@ class GameObject {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     this.bBox();
 
-    //Debugging bBox
+    // Debugging bBox to see the rectangel bbox (uncomment the next three lines)
     // ctx.beginPath();
     // ctx.rect(this.bBoxX, this.bBoxY, this.bBoxWidth, this.bBoxHeight);
     // ctx.stroke();
